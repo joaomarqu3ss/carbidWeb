@@ -1,0 +1,30 @@
+<div class="min-h-screen relative flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+  <!-- Background Image Overlay -->
+  <div class="absolute inset-0 bg-cover bg-center opacity-40" style="background-image: url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=1920');"></div>
+  
+  <!-- Dark Overlay -->
+  <div class="absolute inset-0 bg-black/50"></div>
+
+  <!-- Login Button - Top Right -->
+  <button (click)="goLogin()" class="absolute top-6 right-6 z-20 px-6 py-2.5 bg-transparent border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-gray-900 transition-all duration-300 shadow-lg">
+    Login
+  </button>
+
+  <!-- Main Content -->
+  <div class="relative z-10 text-center px-6 max-w-4xl">
+    <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 drop-shadow-2xl animate-fade-in staatliches-regular">
+      BEM VINDO(A) AO CARBID!
+    </h1>
+    
+    <p class="text-xl md:text-2xl text-gray-200 mb-12 drop-shadow-lg">
+      Descubra os melhores carros, avaliações e tendências do mercado automotivo
+    </p>
+
+    <button class="px-10 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-lg font-bold rounded-full hover:from-blue-700 hover:to-blue-800 transform hover:scale-105 transition-all duration-300 shadow-2xl" (click)="vamosComecar()">
+      Vamos Começar
+    </button>
+  </div>
+
+  <!-- Decorative Elements -->
+  <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black to-transparent"></div>
+</div>

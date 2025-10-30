@@ -1,0 +1,241 @@
+<div
+  class="min-h-screen relative flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-black bbh-sans-bartle-regular py-12 px-4">
+  <!-- Background Image Overlay -->
+  <div class="absolute inset-0 bg-cover bg-center opacity-30"
+    style="background-image: url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=1920');"></div>
+
+  <!-- Dark Overlay -->
+  <div class="absolute inset-0 bg-black/60"></div>
+
+  <!-- Form Container -->
+  <div
+    class="relative z-10 w-full max-w-5xl bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl p-8 md:p-12 border border-white/20">
+
+    <h1 class="text-4xl md:text-5xl font-bold text-white mb-2 text-center">
+      Cadastro
+    </h1>
+
+    <p class="text-gray-300 text-center mb-8">
+      Preencha seus dados para começar
+    </p>
+
+    <form [formGroup]="form" (ngSubmit)="cadastrar()" class="space-y-6">
+
+      <!-- Email e Senha -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label class="block text-white font-semibold mb-2">Email</label>
+          <input type="email" formControlName="email"
+            class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            placeholder="seu@email.com">
+        </div>
+
+        <div>
+          <label class="block text-white font-semibold mb-2">Senha</label>
+          <input type="password" formControlName="senha"
+            class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            placeholder="Digite sua senha">
+        </div>
+      </div>
+
+      <!-- Grupo dadosPessoais -->
+      <div formGroupName="dadosPessoais">
+
+        <!-- Nome Completo e Telefone -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div>
+            <label class="block text-white font-semibold mb-2">Nome Completo</label>
+            <input type="text" formControlName="nomeCompleto"
+              class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Digite seu nome completo">
+          </div>
+
+          <div>
+            <label class="block text-white font-semibold mb-2">Telefone</label>
+            <input type="tel" formControlName="telefone"
+              class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="(00) 00000-0000">
+          </div>
+        </div>
+
+        <!-- CPF -->
+        <div class="mb-6">
+          <label class="block text-white font-semibold mb-2">CPF</label>
+          <input type="text" formControlName="cpf"
+            class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            placeholder="000.000.000-00">
+        </div>
+
+        <div class="mb-6">
+          <label class="block text-white font-semibold mb-2">Data de nascimento</label>
+          <input type="text" formControlName="dataNascimento"
+            class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            placeholder="01/01/1990">
+        </div>
+
+        <!-- Grupo endereco -->
+        <div formGroupName="endereco">
+
+          <!-- CEP -->
+          <div class="mb-6">
+            <label class="block text-white font-semibold mb-2">CEP</label>
+            <input type="text" (keyup)="cepKeyUp($event)" formControlName="cep"
+              class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="00000-000">
+          </div>
+
+          <!-- Logradouro e Número -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div>
+              <label class="block text-white font-semibold mb-2">Logradouro</label>
+              <input type="text" formControlName="logradouro"
+                class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Rua, Avenida...">
+            </div>
+
+            <div>
+              <label class="block text-white font-semibold mb-2">Número</label>
+              <input type="text" formControlName="numero"
+                class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Nº">
+            </div>
+          </div>
+
+          <!-- Complemento e Bairro -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div>
+              <label class="block text-white font-semibold mb-2">Complemento</label>
+              <input type="text" formControlName="complemento"
+                class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Apto, Bloco...">
+            </div>
+
+            <div>
+              <label class="block text-white font-semibold mb-2">Bairro</label>
+              <input type="text" formControlName="bairro"
+                class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Nome do bairro">
+            </div>
+          </div>
+
+          <!-- Cidade e Estado -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-white font-semibold mb-2">Cidade</label>
+              <input type="text" formControlName="cidade"
+                class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Sua cidade">
+            </div>
+
+            <div>
+              <label class="block text-white font-semibold mb-2">Estado</label>
+              <input type="text" formControlName="estado"
+                class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Seu estado">
+            </div>
+          </div>
+
+        </div> <!-- Fim formGroupName="endereco" -->
+
+      </div> <!-- Fim formGroupName="dadosPessoais" -->
+
+      <div>
+        <label class="block text-white font-semibold mb-2">CNH</label>
+
+        <!-- Área de Preview da Foto (aparece quando foto é selecionada) -->
+        <div class="mb-4">
+          <div
+            class="w-full md:w-64 h-64 rounded-lg bg-white/10 border-2 border-dashed border-white/30 flex items-center justify-center overflow-hidden">
+            <!-- Imagem Preview (quando foto for selecionada) -->
+            <img *ngIf="fotoPreview" [src]="fotoPreview" alt="Preview da foto" class="w-full h-full object-cover">
+
+            <!-- Placeholder (quando não há foto) -->
+            <div *ngIf="!fotoPreview" class="text-center text-gray-400">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto mb-2 opacity-50" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              <p class="text-sm">Nenhuma foto selecionada</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Input File (escondido) -->
+        <input type="file" #fileInput (change)="oneFileSelected($event)" accept="image/*" class="hidden">
+
+        <!-- Botões -->
+        <div class="flex gap-3">
+          <button type="button" (click)="fileInput.click()"
+            class="px-6 py-3 bg-white/20 border-2 border-white/50 text-white font-semibold rounded-lg hover:bg-white/30 transition-all duration-300 flex items-center justify-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            Selecionar Foto
+          </button>
+
+          <button *ngIf="fotoPreview" type="button" (click)="removerFoto()"
+            class="px-6 py-3 bg-red-600/20 border-2 border-red-500/50 text-red-400 font-semibold rounded-lg hover:bg-red-600/30 transition-all duration-300">
+            Remover
+          </button>
+        </div>
+      </div>
+
+      <!-- Botão Concluir Cadastro -->
+      <div class="pt-4">
+        <button type="submit"
+          class="w-full px-10 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-lg font-bold rounded-lg hover:from-blue-700 hover:to-blue-800 transform hover:scale-105 transition-all duration-300 shadow-2xl">
+          Concluir Cadastro
+        </button>
+      </div>
+
+    </form>
+
+    <!-- Espaço reservado para mensagem de sucesso (centro da tela) -->
+    <!-- Modal de Sucesso -->
+    <div *ngIf="mensagemSucesso()"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+      <div
+        class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl shadow-2xl p-8 md:p-12 max-w-md w-full mx-4 border border-gray-700 text-center">
+
+        <!-- Ícone de Sucesso com animação -->
+        <div class="mb-6 flex justify-center">
+          <div class="relative">
+            <!-- Círculo de fundo com pulso -->
+            <div class="absolute inset-0 bg-green-500/20 rounded-full animate-ping"></div>
+            <!-- Círculo principal -->
+            <div class="relative bg-green-500/30 rounded-full p-4 border-4 border-green-500">
+              <svg class="w-12 h-12 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Título -->
+        <h2 class="text-3xl font-bold text-white mb-4">
+          Cadastro realizado!
+        </h2>
+
+        <!-- Mensagem -->
+        <p class="text-gray-300 mb-8 leading-relaxed">
+          {{mensagem200()}}
+        </p>
+
+        <!-- Botão -->
+        <button (click)="return()"
+          class="w-full px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white text-lg font-bold rounded-lg hover:from-blue-700 hover:to-blue-800 transform hover:scale-105 transition-all duration-300 shadow-xl">
+          Voltar ao início
+        </button>
+
+      </div>
+    </div>
+
+    <!-- <div *ngIf="mensagemErro" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+     </div> -->
+
+
+  </div>
+</div>

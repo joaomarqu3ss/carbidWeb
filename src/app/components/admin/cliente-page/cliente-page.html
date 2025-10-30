@@ -1,0 +1,167 @@
+<div class="flex min-h-screen bg-gray-900">
+  
+  <!-- Sidebar Component -->
+  <app-sidebar></app-sidebar>
+
+  <!-- Main Content -->
+  <main class="flex-1 md:ml-64 p-6 bbh-sans-bartle-regular">
+    
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-4xl font-bold text-white mb-2">Ficha do Cliente</h1>
+      <p class="text-gray-400">Informações detalhadas do cadastro</p>
+    </div>
+
+    <!-- Card Principal -->
+    <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl shadow-2xl border border-gray-700 overflow-hidden">
+      
+      <!-- Foto e Informações Principais -->
+      <div class="px-8 py-8">
+        <div class="flex flex-col md:flex-row md:items-start gap-8">
+          
+          <!-- Foto do Cliente -->
+          <div class="flex-shrink-0">
+            <div class="w-48 h-48 rounded-2xl border-4 border-gray-700 bg-gradient-to-br from-blue-500 to-purple-600 overflow-hidden shadow-xl">
+              <img [src]="fotoUsuario()" alt="Foto do cliente" class="w-full h-full object-cover">
+            </div>
+          </div>
+
+          <!-- Nome, Status e Botões -->
+          <div class="flex-1">
+            <h2 class="text-3xl font-bold text-white mb-3">{{nomeUsuario()}}</h2>
+            <div class="flex flex-wrap gap-2 mb-6">
+              <span class="px-3 py-1 bg-yellow-500/20 text-yellow-400 text-sm font-semibold rounded-full border border-yellow-500/50">
+                Pendente
+              </span>
+            </div>
+
+            <!-- Botões de Ação -->
+            <div class="flex flex-wrap gap-3">
+              <button (click)="aprovar()" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors duration-200 flex items-center gap-2 shadow-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                Aprovar
+              </button>
+              <button (click)="reprovar()" class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors duration-200 flex items-center gap-2 shadow-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                Reprovar
+              </button>
+              
+            </div>
+          </div>
+        </div>
+
+        <!-- Divisor -->
+        <div class="border-t border-gray-700 my-8"></div>
+
+        <!-- Grid de Informações -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          
+          <!-- Coluna 1 - Informações Pessoais -->
+          <div class="space-y-6">
+            <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              Informações Pessoais
+            </h3>
+
+            <!-- Email -->
+            <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
+              <label class="text-gray-400 text-sm font-semibold mb-1 block">Email</label>
+              <p class="text-white text-lg">{{email()}}</p>
+            </div>
+
+            <!-- CPF -->
+            <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
+              <label class="text-gray-400 text-sm font-semibold mb-1 block">CPF</label>
+              <p class="text-white text-lg">{{cpf()}}</p>
+            </div>
+
+            <!-- Telefone -->
+            <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
+              <label class="text-gray-400 text-sm font-semibold mb-1 block">Telefone</label>
+              <p class="text-white text-lg">{{telefone()}}</p>
+            </div>
+
+            <!-- Data de Nascimento -->
+            <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
+              <label class="text-gray-400 text-sm font-semibold mb-1 block">Data de Nascimento</label>
+              <p class="text-white text-lg">{{dataNascimento()}}</p>
+            </div>
+
+            <!-- Data de Cadastro -->
+            <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
+              <label class="text-gray-400 text-sm font-semibold mb-1 block">Data de Cadastro</label>
+              <p class="text-white text-lg">{{dataCriacao() | date}}</p>
+            </div>
+          </div>
+
+          <!-- Coluna 2 - Endereço -->
+          <div class="space-y-6">
+            <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              Endereço
+            </h3>
+
+            <!-- CEP -->
+            <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
+              <label class="text-gray-400 text-sm font-semibold mb-1 block">CEP</label>
+              <p class="text-white text-lg">{{cep()}}</p>
+            </div>
+
+            <!-- Logradouro -->
+            <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
+              <label class="text-gray-400 text-sm font-semibold mb-1 block">Logradouro</label>
+              <p class="text-white text-lg">{{logradouro()}}</p>
+            </div>
+
+            <!-- Número e Complemento -->
+            <div class="grid grid-cols-2 gap-4">
+              <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
+                <label class="text-gray-400 text-sm font-semibold mb-1 block">Número</label>
+                <p class="text-white text-lg">{{numero()}}</p>
+              </div>
+              <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
+                <label class="text-gray-400 text-sm font-semibold mb-1 block">Complemento</label>
+                <p class="text-white text-lg">{{complemento()}}</p>
+              </div>
+            </div>
+
+            <!-- Bairro -->
+            <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
+              <label class="text-gray-400 text-sm font-semibold mb-1 block">Bairro</label>
+              <p class="text-white text-lg">{{bairro()}}</p>
+            </div>
+
+            <!-- Cidade e Estado -->
+            <div class="grid grid-cols-2 gap-4">
+              <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
+                <label class="text-gray-400 text-sm font-semibold mb-1 block">Cidade</label>
+                <p class="text-white text-lg">{{cidade()}}</p>
+              </div>
+              <div class="bg-gray-800/50 rounded-lg p-4 border border-gray-700">
+                <label class="text-gray-400 text-sm font-semibold mb-1 block">Estado</label>
+                <p class="text-white text-lg">{{estado()}}</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Seção de Observações (Opcional) -->
+        
+
+      </div>
+
+    </div>
+
+  </main>
+
+</div>

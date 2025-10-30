@@ -1,0 +1,86 @@
+<div class="flex min-h-screen bg-gray-900">
+
+  <!-- Sidebar Component -->
+  <app-sidebar></app-sidebar>
+
+  <!-- Main Content -->
+  <!-- Conteúdo principal -->
+  <div class="flex-1 p-6 text-gray-100 transition-all duration-300 lg:ml-64">
+    <div class="max-w-7xl mx-auto">
+      <div class="mb-8">
+        <h1 class="text-2xl font-bold mb-2">Clientes</h1>
+        <p class="text-sm text-gray-400">
+          {{ users().length }} cliente{{ users().length !== 1 ? 's' : '' }} aguardando análise
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div *ngFor="let user of users()"
+          class="bg-gray-800 border border-gray-700 rounded-lg p-6 hover:border-indigo-400 transition-all duration-300">
+          <div class="flex items-start gap-3 mb-4">
+            <div class="w-12 h-12 rounded-full bg-indigo-500/20 flex items-center justify-center">
+              <i class="fa-solid fa-user text-indigo-400 text-xl"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3 class="text-lg font-semibold truncate">{{ user.dados.nomeCompleto }}</h3>
+              <p class="text-sm text-gray-400">ID: {{ user.id }}</p>
+            </div>
+          </div>
+
+          <div class="space-y-3 mb-6">
+            <div class="flex items-start gap-2">
+              <i class="fa-solid fa-id-card text-gray-400 mt-1 text-sm"></i>
+              <div>
+                <p class="text-xs text-gray-400">CPF</p>
+                <p class="text-sm">{{ user.dados.cpf }}</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-2">
+              <i class="fa-solid fa-envelope text-gray-400 mt-1 text-sm"></i>
+              <div>
+                <p class="text-xs text-gray-400">Email</p>
+                <p class="text-sm truncate">{{ user.email }}</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-2">
+              <i class="fa-solid fa-phone text-gray-400 mt-1 text-sm"></i>
+              <div>
+                <p class="text-xs text-gray-400">Telefone</p>
+                <p class="text-sm">{{ user.dados.telefone }}</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-2">
+              <i class="fa-solid fa-location-dot text-gray-400 mt-1 text-sm"></i>
+              <div>
+                <p class="text-xs text-gray-400">Endereço</p>
+                <p class="text-sm">{{ user.dados.endereco.logradouro }}, {{ user.dados.endereco.numero }}</p>
+                <p class="text-sm text-gray-400">
+                  {{ user.dados.endereco.bairro }} - {{ user.dados.endereco.cidade }}/{{ user.dados.endereco.estado }}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex gap-2">
+            <button
+              class="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-3 py-1.5 text-sm font-bold rounded-lg hover:from-blue-700 hover:to-blue-800 transform hover:scale-105 transition-all duration-300">
+              Aprovar
+            </button>
+            <button
+              class="flex-1 bg-gradient-to-r from-red-600 to-red-700 text-white px-3 py-1.5 text-sm font-bold rounded-lg hover:from-red-700 hover:to-red-800 transform hover:scale-105 transition-all duration-300">
+              Reprovar
+            </button>
+            <button (click)="maisInfo(user.id)"
+              class="flex-1 border border-gray-700 hover:border-indigo-400 hover:bg-gray-700 px-3 py-1.5 rounded-md text-sm font-bold transform hover:scale-105 transition-all duration-300">
+              Mais info
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
