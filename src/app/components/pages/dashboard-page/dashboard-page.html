@@ -13,8 +13,8 @@
           Anúncios de Carros
         </h1>
         <p class="text-sm text-gray-400">
-          {{ filteredCars.length }} veículo{{ filteredCars.length !== 1 ? 's' : '' }} disponível{{ filteredCars.length
-          !== 1 ? 'eis' : '' }}
+          {{ carros().length }} veículo{{ carros().length > 1 ? 's' : '' }} disponív{{ carros().length
+          > 1 ? 'eis' : 'el' }}
         </p>
       </div>
 
@@ -132,7 +132,7 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
         <!-- Mensagem quando não há resultados -->
-        <div *ngIf="filteredCars.length === 0" class="col-span-full text-center py-12">
+        <div *ngIf="carros().length === 0" class="col-span-full text-center py-12">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-gray-600 mb-4" fill="none"
             viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -143,14 +143,10 @@
         </div>
 
         <!-- Card de Carro -->
-        <div *ngFor="let car of filteredCars"
+        <div *ngFor="let car of carros()"
           class="overflow-hidden hover:shadow-lg transition-shadow duration-300 bg-gray-800 border border-gray-700 rounded-lg">
           <div class="relative">
-            <img [src]="car.imagem" [alt]="car.marca + ' ' + car.modelo" class="w-full h-48 object-cover" />
-            <span *ngIf="car.destaque"
-              class="absolute top-2 right-2 px-3 py-1 bg-blue-600 text-white text-xs font-semibold rounded-full">
-              Destaque
-            </span>
+            <img [src]="fotoCapa()[car.id]" [alt]="car.marca + ' ' + car.modelo" class="w-full h-48 object-cover" />
             <button (click)="handleFavorite(car.id)"
               class="absolute top-2 left-2 p-2 bg-gray-900/80 backdrop-blur-sm rounded-full hover:bg-gray-900 transition-colors">
               <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24"
@@ -173,7 +169,7 @@
               <div>
                 <span class="text-gray-400">KM:</span>
                 <span class="ml-1 text-white font-medium">
-                  {{ formatKm(car.km) }}
+                  {{ formatKm(car.quilometragem) }}
                 </span>
               </div>
               <div>

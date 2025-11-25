@@ -1,0 +1,76 @@
+/* Animações */
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
+
+@keyframes fadeDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-30px) scaleY(0.95);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(4px) scaleY(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+  }
+}
+
+@keyframes fadeItem {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Classes de animação */
+.animate-fadeDown {
+  animation: fadeDown 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.animate-item {
+  animation: fadeItem 0.5s ease forwards;
+}
+
+/* Ajustes de escala no hover */
+.transform.hover\:scale-102:hover {
+  transform: scale(1.02);
+}
+
+.transform.hover\:scale-105:hover {
+  transform: scale(1.05);
+}
+
+/* Garantir que o toast fique acima de tudo */
+.z-50 {
+  z-index: 50;
+}
+
+/* Ajustes responsivos para mobile */
+@media (max-width: 768px) {
+  .md\:ml-64 {
+    margin-left: 0;
+  }
+}
+
+/* Smooth scroll */
+* {
+  scroll-behavior: smooth;
+}

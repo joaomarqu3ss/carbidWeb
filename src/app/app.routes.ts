@@ -6,6 +6,9 @@ import { DashboardPage } from './components/pages/dashboard-page/dashboard-page'
 import { AuthGuard } from './guards/auth.guard';
 import { AdmController } from './components/admin/adm-controller/adm-controller';
 import { ClientePage } from './components/admin/cliente-page/cliente-page';
+import { MeusCarros } from './components/pages/meus-carros/meus-carros';
+import { CadastrarCarro } from './components/pages/cadastrar-carro/cadastrar-carro';
+import { DetalhesDoCarro } from './components/pages/detalhes-do-carro/detalhes-do-carro';
 
 export const routes: Routes = [
     {
@@ -24,6 +27,21 @@ export const routes: Routes = [
     {
         path: 'login',
         component: LoginPage
+    },
+    {
+        path:'meus-carros',
+        component:MeusCarros,
+        canActivate:[AuthGuard]
+    },
+    {
+        path:'cadastrar-carro',
+        component:CadastrarCarro,
+        canActivate:[AuthGuard]
+    },
+    {
+        path:'detalhes-do-carro/:id',
+        component:DetalhesDoCarro,
+        canActivate:[AuthGuard]
     },
     {
         path: 'dashboard',

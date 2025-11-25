@@ -1,7 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, inject, signal, WritableSignal } from '@angular/core';
 import { Sidebar } from "../../shared/sidebar/sidebar";
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 
 
 export interface CarData {
@@ -23,6 +26,14 @@ export interface CarData {
   styleUrl: './dashboard-page.css'
 })
 export class DashboardPage {
+    
+  router = inject(Router);
+  http = inject(HttpClient);
+  carros = signal<any[]>([]);
+  id = signal<string>('');
+  fotos = signal<any[]>([]);
+  fotoCapa: WritableSignal<Record<string, string>> = signal({}); // map fotos -> id do carro
+  
 
    cars: CarData[] = [];
   filteredCars: CarData[] = [];
@@ -45,7 +56,47 @@ export class DashboardPage {
   cores: string[] = [];
   anos: number[] = [];
 
-  ngOnInit(): void {
+
+  ngOnInit() {
+
+    const auth = sessionStorage.getItem('token');
+    const user = JSON.parse(auth as string);
+
+    this.http.get<any[]>(`${environment.apiCarbid}/carro/disponiveis`, {headers : {Authorization: `Bearer ${user.token}`} })
+    .subscribe({
+      next: (resp : any) => {
+        
+      this.carros.set(resp);
+
+    if (resp !== null) {
+      resp.forEach((carro: any) => {
+
+        this.http.get<string[]>(`${environment.apiCarbid}/carro/fotos/${carro.id}`, {
+          headers: { Authorization: `Bearer ${user.token}` }
+        })
+        .subscribe(fotos => {
+
+          if (fotos && fotos.length > 0) {
+            const urlDaFoto =  fotos[0]
+            this.fotoCapa.update(currentMap => {
+            return {
+              ...currentMap,
+              [carro.id]: urlDaFoto
+            };
+          });  // <-- ARMAZENA A FOTO PARA ESTE CARRO
+          }
+
+        });
+
+      });
+    }
+
+      },
+      error: (e) => {
+        console.log(e.error.message);
+      }
+    });
+
     this.cars = [
       {
         id: 1,
@@ -173,8 +224,8 @@ export class DashboardPage {
     return new Intl.NumberFormat('pt-BR').format(km);
   }
 
-  handleFavorite(id: number): void {
-    const car = this.cars.find(c => c.id === id);
+  handleFavorite(id: string): void {
+    const car = this.carros().find(c => c.id === id);
     if (car) {
       this.showToast(
         'Adicionado aos Favoritos',
@@ -183,13 +234,14 @@ export class DashboardPage {
     }
   }
 
-  handleViewDetails(id: number): void {
-    const car = this.cars.find(c => c.id === id);
+  handleViewDetails(id: string): void {
+    const car = this.carros().find(c => c.id === id);
     if (car) {
       this.showToast(
         'Ver Detalhes',
         `Abrindo detalhes de ${car.marca} ${car.modelo}`
       );
+      this.router.navigate([`/detalhes-do-carro/${id}`]);
     }
   }
 

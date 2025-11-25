@@ -1,0 +1,43 @@
+/* Animações */
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
+
+/* Ajustes para inputs number */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Ajustes responsivos para mobile */
+@media (max-width: 768px) {
+  .md\:ml-64 {
+    margin-left: 0;
+  }
+}
+
+/* Garantir que o toast fique acima de tudo */
+.z-50 {
+  z-index: 50;
+}
+
+/* Smooth scroll */
+* {
+  scroll-behavior: smooth;
+}
