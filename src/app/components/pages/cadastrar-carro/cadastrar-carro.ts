@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { Component, inject, signal } from '@angular/core';
+import { ReactiveFormsModule, FormsModule, FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Sidebar } from "../../shared/sidebar/sidebar";
 
@@ -14,6 +14,46 @@ import { Sidebar } from "../../shared/sidebar/sidebar";
 })
 export class CadastrarCarro {
 fotos: string[] = [];
+files: File[] = [];
+fb = inject(FormBuilder);
+// {
+//   "nome": "Onix Plus 1.0 Turbo",
+//   "marca": "Chevrolet",
+//   "modelo": "LTZ",
+//   "ano": 2023,
+//   "cor": "Branco",
+//   "tipo": "Sedan",
+//   "direcao": "Elétrica",
+//   "transmissao": "Manual",
+//   "motor": "1.4 Turbo",
+//   "portas": 4,
+//   "quilometragem": 8500,
+//   "placa": "7",
+//   "combustivel": "Flex",
+//   "opcionais": "Airbag,ABS,Multimídia,Câmera de Ré",
+//   "descricao": "Veículo praticamente novo, todas as revisões em concessionária.",
+//   "preco": 92500.00,
+//   "tipoDeVenda": "Vender"
+// }
+form = this.fb.group({
+    nome: ['',[Validators.required]],
+    marca: ['',[Validators.required]],
+    modelo: ['',[Validators.required]],
+    ano: ['',[Validators.required]],
+    cor: ['',[Validators.required]],
+    tipo: ['',[Validators.required]],
+    direcao: ['',[Validators.required]],
+    transmissao: ['',[Validators.required]],
+    motor: ['',[Validators.required]],
+    portas: ['',[Validators.required]],
+    quilometragem: ['',[Validators.required]],
+    placa: ['',[Validators.required]],
+    combustivel: ['',[Validators.required]],
+    opcionais: ['', [Validators.required]],
+    descricao: ['',[Validators.required]],
+    preco: ['',[Validators.required]],
+    tipoDeVenda: ['',[Validators.required]]
+})
   
   // Form fields
   marca: string = '';
@@ -48,6 +88,15 @@ fotos: string[] = [];
   toastMessage: string = '';
 
   constructor(private router: Router) {}
+
+  onFileSelected() {
+    // PEGAR FOTOS
+  }
+
+  onSumbit() {
+    // ENVIAR FORMULARIO
+
+  }
 
   handleSubmit(event: Event): void {
     event.preventDefault();

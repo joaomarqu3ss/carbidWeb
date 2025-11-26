@@ -1,8 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject, Signal, signal, WritableSignal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Sidebar } from "../../shared/sidebar/sidebar";
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 
 interface CarDetails {
   marca: string;
@@ -40,7 +42,11 @@ export class DetalhesDoCarro {
   car: CarDetails | null = null;
   currentImageIndex: number = 0;
   showContactDialog: boolean = false;
-  
+
+  carro = signal<any>(null);
+  id = signal<string>('');
+  fotos = signal<string[]>([]);
+
   // Toast
   toastVisible: boolean = false;
   toastTitle: string = '';
@@ -124,14 +130,37 @@ export class DetalhesDoCarro {
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private http: HttpClient
   ) {}
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      const id = Number(params['id']) || 1;
-      this.car = this.carDetailsData[id] || this.carDetailsData[1];
-    });
+    
+    const auth = sessionStorage.getItem('token')
+    const user = JSON.parse(auth as string);
+
+    const idParam = this.route.snapshot.params['id'];
+    if(idParam) {
+      this.id.set(idParam)
+      this.http.get(`${environment.apiCarbid}/carro/disponiveis/${this.id()}`, {headers: {Authorization: `Bearer ${user.token}`}})
+      .subscribe({
+        next: (resp : any) => {
+          if(resp) {
+            this.carro.set(resp);
+            this.http.get(`${environment.apiCarbid}/carro/fotos/${this.id()}`, {headers: {Authorization: `Bearer ${user.token}`}})
+            .subscribe((fotosCarro : any )=> {
+                this.fotos.update(currentList => [...currentList, ...fotosCarro]); 
+            });
+          }
+
+        },
+        error: (e) => {
+          console.log(e.error.message);
+        }
+      })
+    }
+
+
   }
 
   formatPrice(price: number): string {
@@ -150,16 +179,16 @@ export class DetalhesDoCarro {
   }
 
   previousImage(): void {
-    if (this.car && this.car.imagens.length > 0) {
+    if (this.fotos().length > 0 && this.currentImageIndex > 0) {
       this.currentImageIndex = 
-        (this.currentImageIndex - 1 + this.car.imagens.length) % this.car.imagens.length;
+        (this.currentImageIndex - 1) % this.fotos().length;
     }
   }
 
   nextImage(): void {
-    if (this.car && this.car.imagens.length > 0) {
+    if (this.fotos().length > 0) {
       this.currentImageIndex = 
-        (this.currentImageIndex + 1) % this.car.imagens.length;
+        (this.currentImageIndex + 1) % this.fotos().length;
     }
   }
 

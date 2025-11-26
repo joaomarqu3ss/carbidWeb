@@ -1,19 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Sidebar } from "../../shared/sidebar/sidebar";
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 
-interface MeuCarro {
-  id: number;
-  marca: string;
-  modelo: string;
-  ano: number;
-  preco: number;
-  km: number;
-  imagem: string;
-  status: 'venda' | 'aluguel';
-}
 
 @Component({
   selector: 'app-meus-carros',
@@ -22,66 +14,70 @@ interface MeuCarro {
   styleUrl: './meus-carros.css'
 })
 export class MeusCarros {
-carros: MeuCarro[] = [];
-  
+
+cars = signal<any[]>([]);
+fotoCapa = signal<Record<string, string>>({})
   // Toast
   toastVisible: boolean = false;
   toastTitle: string = '';
   toastMessage: string = '';
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private http: HttpClient
+  ) {}
 
   ngOnInit(): void {
-    // Mock data - será substituído por dados reais do backend
-    this.carros = [
-      {
-        id: 1,
-        marca: 'Toyota',
-        modelo: 'Corolla XEi',
-        ano: 2023,
-        preco: 125000,
-        km: 15000,
-        imagem: 'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=800&auto=format&fit=crop',
-        status: 'venda'
+
+    const auth = sessionStorage.getItem('token');
+    const user = JSON.parse(auth as string);
+
+    this.http.get(`${environment.apiCarbid}/carro`, {headers: {Authorization: `Bearer ${user.token}`}})
+    .subscribe({
+      next: (resp : any) => {
+        
+        this.cars.set(resp);
+        if(resp.length > 0){
+          resp.forEach((carros : any) => {
+            this.http.get<any[]>(`${environment.apiCarbid}/carro/fotos/${carros.id}`, {headers: {Authorization: `Bearer ${user.token}`}})
+            .subscribe(fotos => {
+              const foto1 = fotos[0];
+              this.fotoCapa.update(currentMap => {
+                return {
+                  ...currentMap,[carros.id]: foto1
+                }
+              });
+            });
+          });
+        }
+
       },
-      {
-        id: 2,
-        marca: 'Honda',
-        modelo: 'Civic Touring',
-        ano: 2024,
-        preco: 3500,
-        km: 5000,
-        imagem: 'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=800&auto=format&fit=crop',
-        status: 'aluguel'
+      error: (e) => {
+        console.log(e.error.message);
       }
-    ];
+    })
   }
 
-  formatPrice(price: number, status?: string): string {
-    const statusToUse = status || '';
-    if (statusToUse === 'aluguel') {
-      return `R$ ${price.toLocaleString('pt-BR')}/mês`;
-    }
-    return `R$ ${price.toLocaleString('pt-BR')}`;
+  formatPrice(price: number): string {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(price);
   }
 
   formatKm(km: number): string {
     return `${km.toLocaleString('pt-BR')} km`;
   }
 
-  getStatusLabel(status: string): string {
-    return status === 'venda' ? 'À Venda' : 'Aluguel';
-  }
-
   navegarParaCadastro(): void {
     this.router.navigate(['/cadastrar-carro']);
   }
 
-  handleViewDetails(id: number): void {
+  handleViewDetails(id: string): void {
     this.router.navigate([`/detalhes-do-carro/${id}`]);
   }
 
-  handleEdit(id: number): void {
+  handleEdit(id: string): void {
     this.router.navigate([`/editar-carro/${id}`]);
   }
 

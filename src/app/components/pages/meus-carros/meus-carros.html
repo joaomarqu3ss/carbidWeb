@@ -33,7 +33,7 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
         <!-- Mensagem quando não há carros -->
-        <div *ngIf="carros.length === 0" class="col-span-full text-center py-12">
+        <div *ngIf="cars().length === 0" class="col-span-full text-center py-12">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-gray-600 mb-4" fill="none"
             viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -52,15 +52,29 @@
         </div>
 
         <!-- Card de Carro -->
-        <div *ngFor="let car of carros"
+        <div *ngFor="let car of cars()"
           class="overflow-hidden hover:shadow-lg transition-shadow duration-300 bg-gray-800 border border-gray-700 rounded-lg">
           <div class="relative">
-            <img [src]="car.imagem" [alt]="car.marca + ' ' + car.modelo" class="w-full h-48 object-cover" />
-            <span 
-              class="absolute top-2 right-2 px-3 py-1 text-white text-xs font-semibold rounded-full"
-              [class.bg-blue-600]="car.status === 'venda'"
-              [class.bg-gray-700]="car.status === 'aluguel'">
-              {{ getStatusLabel(car.status) }}
+            <img [src]="fotoCapa()[car.id]" [alt]="car.marca + ' ' + car.modelo" class="w-full h-48 object-cover" />
+            <span *ngIf="car.rentorsell === 'Vender'"
+              class="absolute top-2 right-2 px-3 py-1 text-white text-xs font-semibold rounded-full bg-blue-600">
+              {{ car.rentorsell }}
+            </span>
+            <span *ngIf="car.rentorsell === 'Alugar'"
+              class="absolute top-2 right-2 px-3 py-1 text-white text-xs font-semibold rounded-full bg-gray-600">
+              {{ car.rentorsell }}
+            </span>
+            <span *ngIf="car.rentorsell === 'Trocar/Vender'"
+              class="absolute top-2 right-2 px-3 py-1 text-white text-xs font-semibold rounded-full bg-blue-600">
+              {{ car.rentorsell }}
+            </span>
+            <span *ngIf="car.rentorsell === 'Trocar'"
+              class="absolute top-2 right-2 px-3 py-1 text-white text-xs font-semibold rounded-full bg-gray-600">
+              {{ car.rentorsell }}
+            </span>
+            <span *ngIf="car.rentorsell === 'Alugar/Vender'"
+              class="absolute top-2 right-2 px-3 py-1 text-white text-xs font-semibold rounded-full bg-blue-600">
+              {{ car.rentorsell }}
             </span>
           </div>
 
@@ -69,14 +83,14 @@
               <h3 class="text-lg font-bold text-white">
                 {{ car.marca }} {{ car.modelo }}
               </h3>
-              <p class="text-sm text-gray-400">{{ car.ano }} • {{ formatKm(car.km) }}</p>
+              <p class="text-sm text-gray-400">{{ car.ano }} • {{ formatKm(car.quilometragem) }}</p>
             </div>
 
             <div class="flex items-center justify-between mb-4">
               <div>
                 <p class="text-xs text-gray-400">Preço</p>
                 <p class="text-2xl font-bold text-blue-500">
-                  {{ formatPrice(car.preco, car.status) }}
+                  {{ formatPrice(car.preco) }}
                 </p>
               </div>
             </div>
