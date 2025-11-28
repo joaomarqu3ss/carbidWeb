@@ -21,48 +21,60 @@
       <!-- Título -->
       <h1 class="text-3xl font-bold text-white mb-8">Cadastrar novo carro</h1>
 
-      <form (submit)="handleSubmit($event)" class="space-y-6">
+      <form [formGroup]="form" (ngSubmit)="onSumbit()" class="space-y-6">
 
         <!-- Card: Fotos do Veículo -->
         <div class="bg-gray-800 border border-gray-700 rounded-lg p-6">
-          <h2 class="text-xl font-bold text-white mb-4">Fotos do Veículo</h2>
-          
-          <div class="space-y-4">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-              
-              <!-- Fotos já adicionadas -->
-              <div *ngFor="let foto of fotos; let i = index" class="relative group">
-                <img 
-                  [src]="foto" 
-                  [alt]="'Foto ' + (i + 1)"
-                  class="w-full h-32 object-cover rounded-lg border border-gray-700" />
-                <button
-                  type="button"
-                  (click)="handleRemoveFoto(i)"
-                  class="absolute top-2 right-2 p-1 bg-red-600 hover:bg-red-700 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
+  <h2 class="text-xl font-bold text-white mb-4">Fotos do Veículo</h2>
 
-              <!-- Botão adicionar foto -->
-              <button
-                type="button"
-                (click)="handleAddFoto()"
-                class="h-32 border-2 border-dashed border-gray-600 hover:border-blue-500 rounded-lg bg-gray-900 hover:bg-gray-800 transition-colors flex flex-col items-center justify-center gap-2 text-gray-400 hover:text-blue-500">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                </svg>
-                <span class="text-xs">Adicionar</span>
-              </button>
-            </div>
-            
-            <p class="text-sm text-gray-400">
-              Adicione até 10 fotos do veículo. A primeira foto será a capa do anúncio.
-            </p>
-          </div>
-        </div>
+  <div class="space-y-4">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+
+      <!-- Fotos já adicionadas -->
+      <div *ngFor="let foto of fotos; let i = index" class="relative group">
+        <img 
+          [src]="foto" 
+          [alt]="'Foto ' + (i + 1)"
+          class="w-full h-32 object-cover rounded-lg border border-gray-700" />
+
+        <button
+          type="button"
+          (click)="handleRemoveFoto(i)"
+          class="absolute top-2 right-2 p-1 bg-red-600 hover:bg-red-700 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Botão adicionar foto -->
+      <button
+        type="button"
+        (click)="fileInput.click()"
+        class="h-32 border-2 border-dashed border-gray-600 hover:border-blue-500 rounded-lg bg-gray-900 hover:bg-gray-800 transition-colors flex flex-col items-center justify-center gap-2 text-gray-400 hover:text-blue-500">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+        </svg>
+        <span class="text-xs">Adicionar</span>
+      </button>
+
+      <!-- INPUT REAL → fica invisível -->
+      <input 
+        type="file"
+        #fileInput
+        accept="image/*"
+        multiple
+        class="hidden"
+        (change)="onFileSelected($event)"
+        (click)="resetInput($event)"
+      />
+    </div>
+
+    <p class="text-sm text-gray-400">
+      Adicione até 10 fotos do veículo. A primeira foto será a capa do anúncio.
+    </p>
+  </div>
+</div>
 
         <!-- Card: Informações Básicas -->
         <div class="bg-gray-800 border border-gray-700 rounded-lg p-6">
@@ -70,25 +82,100 @@
           
           <div class="space-y-4">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              
-              <!-- Marca -->
+
               <div>
-                <label class="block text-sm font-semibold text-gray-400 mb-2">Marca *</label>
+                <label class="block text-sm font-semibold text-gray-400 mb-2">Nome</label>
                 <input 
                   type="text" 
-                  [(ngModel)]="marca" 
+                  formControlName="nome"
                   name="marca"
                   placeholder="Ex: Toyota"
                   required
                   class="w-full px-4 py-2 bg-gray-900 border border-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
               </div>
 
-              <!-- Modelo -->
               <div>
-                <label class="block text-sm font-semibold text-gray-400 mb-2">Modelo *</label>
+                <label class="block text-sm font-semibold text-gray-400 mb-2">Motor</label>
                 <input 
                   type="text" 
-                  [(ngModel)]="modelo" 
+                  formControlName="motor"
+                  name="marca"
+                  placeholder="Ex: 1.0 Turbo"
+                  required
+                  class="w-full px-4 py-2 bg-gray-900 border border-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-400 mb-2">Final da placa</label>
+                <input 
+                  type="text" 
+                  formControlName="placa"
+                  name="marca"
+                  placeholder="Ex: H67"
+                  required
+                  class="w-full px-4 py-2 bg-gray-900 border border-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+
+              <div>
+                <label class="block text-sm font-semibold text-gray-400 mb-2">Portas</label>
+                <input 
+                  type="text" 
+                  formControlName="portas"
+                  name="marca"
+                  placeholder="Ex: 4"
+                  required
+                  class="w-full px-4 py-2 bg-gray-900 border border-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+
+              <div>
+                <label class="block text-sm font-semibold text-gray-400 mb-2">Tipo</label>
+                <input 
+                  type="text" 
+                  formControlName="tipo"
+                  name="marca"
+                  placeholder="Ex: SUV"
+                  required
+                  class="w-full px-4 py-2 bg-gray-900 border border-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+
+              <div>
+                <label class="block text-sm font-semibold text-gray-400 mb-2">Transmissão</label>
+                <input 
+                  type="text" 
+                  formControlName="transmissao"
+                  name="marca"
+                  placeholder="Ex: Manual"
+                  required
+                  class="w-full px-4 py-2 bg-gray-900 border border-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+              
+              <!-- Marca -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-400 mb-2">Marca </label>
+                <input 
+                  type="text" 
+                  formControlName="marca"
+                  name="marca"
+                  placeholder="Ex: Toyota"
+                  required
+                  class="w-full px-4 py-2 bg-gray-900 border border-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-400 mb-2">Direcão </label>
+                <input 
+                  type="text" 
+                  formControlName="direcao"
+                  name="direcao"
+                  placeholder="Ex: Elétrica"
+                  required
+                  class="w-full px-4 py-2 bg-gray-900 border border-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+
+              <!-- Modelo -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-400 mb-2">Modelo </label>
+                <input 
+                  type="text" 
+                  formControlName="modelo"
                   name="modelo"
                   placeholder="Ex: Corolla XEi"
                   required
@@ -97,10 +184,10 @@
 
               <!-- Ano -->
               <div>
-                <label class="block text-sm font-semibold text-gray-400 mb-2">Ano *</label>
+                <label class="block text-sm font-semibold text-gray-400 mb-2">Ano </label>
                 <input 
                   type="number" 
-                  [(ngModel)]="ano" 
+                  formControlName="ano"
                   name="ano"
                   placeholder="Ex: 2023"
                   required
@@ -109,10 +196,10 @@
 
               <!-- Cor -->
               <div>
-                <label class="block text-sm font-semibold text-gray-400 mb-2">Cor *</label>
+                <label class="block text-sm font-semibold text-gray-400 mb-2">Cor </label>
                 <input 
                   type="text" 
-                  [(ngModel)]="cor" 
+                  formControlName="cor"
                   name="cor"
                   placeholder="Ex: Preto"
                   required
@@ -121,10 +208,10 @@
 
               <!-- Quilometragem -->
               <div>
-                <label class="block text-sm font-semibold text-gray-400 mb-2">Quilometragem (km) *</label>
+                <label class="block text-sm font-semibold text-gray-400 mb-2">Quilometragem (km) </label>
                 <input 
                   type="number" 
-                  [(ngModel)]="km" 
+                  formControlName="quilometragem"
                   name="km"
                   placeholder="Ex: 15000"
                   required
@@ -133,24 +220,25 @@
 
               <!-- Tipo de Anúncio -->
               <div>
-                <label class="block text-sm font-semibold text-gray-400 mb-2">Tipo de Anúncio *</label>
+                <label class="block text-sm font-semibold text-gray-400 mb-2">Tipo de Anúncio </label>
                 <select 
-                  [(ngModel)]="tipo" 
+                  formControlName="tipoDeVenda"
                   name="tipo"
                   required
                   class="w-full px-4 py-2 bg-gray-900 border border-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                   <option value="">Selecione</option>
-                  <option value="venda">À Venda</option>
-                  <option value="aluguel">Aluguel</option>
+                  <option value="Vender">À Venda</option>
+                  <option value="Alugar">Aluguel</option>
+                  <option value="Trocar">Trocar</option>
                 </select>
               </div>
 
               <!-- Preço -->
               <div>
-                <label class="block text-sm font-semibold text-gray-400 mb-2">Preço (R$) *</label>
+                <label class="block text-sm font-semibold text-gray-400 mb-2">Preço (R$) </label>
                 <input 
                   type="number" 
-                  [(ngModel)]="preco" 
+                  formControlName="preco"
                   name="preco"
                   placeholder="Ex: 125000"
                   required
@@ -159,18 +247,18 @@
 
               <!-- Combustível -->
               <div>
-                <label class="block text-sm font-semibold text-gray-400 mb-2">Combustível *</label>
+                <label class="block text-sm font-semibold text-gray-400 mb-2">Combustível </label>
                 <select 
-                  [(ngModel)]="combustivel" 
+                  formControlName="combustivel"
                   name="combustivel"
                   required
                   class="w-full px-4 py-2 bg-gray-900 border border-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                   <option value="">Selecione</option>
-                  <option value="flex">Flex</option>
-                  <option value="gasolina">Gasolina</option>
-                  <option value="diesel">Diesel</option>
-                  <option value="eletrico">Elétrico</option>
-                  <option value="hibrido">Híbrido</option>
+                  <option value="Flex">Flex</option>
+                  <option value="Gasolina">Gasolina</option>
+                  <option value="Diesel">Diesel</option>
+                  <option value="Elétrico">Elétrico</option>
+                  <option value="Híbrido">Híbrido</option>
                 </select>
               </div>
             </div>
@@ -179,7 +267,7 @@
             <div>
               <label class="block text-sm font-semibold text-gray-400 mb-2">Descrição</label>
               <textarea 
-                [(ngModel)]="descricao" 
+                formControlName="descricao" 
                 name="descricao"
                 rows="4"
                 placeholder="Descreva as características e condições do veículo..."
@@ -198,28 +286,21 @@
               <input 
                 type="checkbox" 
                 id="arCondicionado" 
-                [(ngModel)]="opcionais.arCondicionado" 
                 name="arCondicionado"
+                (change)="check($event)"
+                value="Ar Condicionado"
                 class="w-4 h-4 text-blue-600 bg-gray-900 border-gray-700 rounded focus:ring-blue-500" />
               <label for="arCondicionado" class="text-sm text-gray-300 cursor-pointer">Ar Condicionado</label>
             </div>
 
-            <div class="flex items-center space-x-2">
-              <input 
-                type="checkbox" 
-                id="direcaoEletrica" 
-                [(ngModel)]="opcionais.direcaoEletrica" 
-                name="direcaoEletrica"
-                class="w-4 h-4 text-blue-600 bg-gray-900 border-gray-700 rounded focus:ring-blue-500" />
-              <label for="direcaoEletrica" class="text-sm text-gray-300 cursor-pointer">Direção Elétrica</label>
-            </div>
 
             <div class="flex items-center space-x-2">
               <input 
                 type="checkbox" 
                 id="vidrosEletricos" 
-                [(ngModel)]="opcionais.vidrosEletricos" 
+               (change)="check($event)"
                 name="vidrosEletricos"
+                value="Vidros Elétricos"
                 class="w-4 h-4 text-blue-600 bg-gray-900 border-gray-700 rounded focus:ring-blue-500" />
               <label for="vidrosEletricos" class="text-sm text-gray-300 cursor-pointer">Vidros Elétricos</label>
             </div>
@@ -228,8 +309,9 @@
               <input 
                 type="checkbox" 
                 id="travasEletricas" 
-                [(ngModel)]="opcionais.travasEletricas" 
+                 (change)="check($event)"
                 name="travasEletricas"
+                value="Travas Elétricas"
                 class="w-4 h-4 text-blue-600 bg-gray-900 border-gray-700 rounded focus:ring-blue-500" />
               <label for="travasEletricas" class="text-sm text-gray-300 cursor-pointer">Travas Elétricas</label>
             </div>
@@ -238,8 +320,9 @@
               <input 
                 type="checkbox" 
                 id="airbag" 
-                [(ngModel)]="opcionais.airbag" 
+               (change)="check($event)"
                 name="airbag"
+                value="Airbag"
                 class="w-4 h-4 text-blue-600 bg-gray-900 border-gray-700 rounded focus:ring-blue-500" />
               <label for="airbag" class="text-sm text-gray-300 cursor-pointer">Airbag</label>
             </div>
@@ -248,8 +331,9 @@
               <input 
                 type="checkbox" 
                 id="abs" 
-                [(ngModel)]="opcionais.abs" 
+                (change)="check($event)"
                 name="abs"
+                value="ABS"
                 class="w-4 h-4 text-blue-600 bg-gray-900 border-gray-700 rounded focus:ring-blue-500" />
               <label for="abs" class="text-sm text-gray-300 cursor-pointer">ABS</label>
             </div>
@@ -258,8 +342,9 @@
               <input 
                 type="checkbox" 
                 id="cameraRe" 
-                [(ngModel)]="opcionais.cameraRe" 
+                (change)="check($event)"
                 name="cameraRe"
+                value="Câmera de Ré"
                 class="w-4 h-4 text-blue-600 bg-gray-900 border-gray-700 rounded focus:ring-blue-500" />
               <label for="cameraRe" class="text-sm text-gray-300 cursor-pointer">Câmera de Ré</label>
             </div>
@@ -268,8 +353,9 @@
               <input 
                 type="checkbox" 
                 id="sensorEstacionamento" 
-                [(ngModel)]="opcionais.sensorEstacionamento" 
+                 (change)="check($event)"
                 name="sensorEstacionamento"
+                value="Sensor de Estacionamento"
                 class="w-4 h-4 text-blue-600 bg-gray-900 border-gray-700 rounded focus:ring-blue-500" />
               <label for="sensorEstacionamento" class="text-sm text-gray-300 cursor-pointer">Sensor de Estacionamento</label>
             </div>
@@ -278,8 +364,9 @@
               <input 
                 type="checkbox" 
                 id="multimidia" 
-                [(ngModel)]="opcionais.multimidia" 
+               (change)="check($event)"
                 name="multimidia"
+                value="Multimídia"
                 class="w-4 h-4 text-blue-600 bg-gray-900 border-gray-700 rounded focus:ring-blue-500" />
               <label for="multimidia" class="text-sm text-gray-300 cursor-pointer">Multimídia</label>
             </div>
@@ -288,8 +375,9 @@
               <input 
                 type="checkbox" 
                 id="bancosCouro" 
-                [(ngModel)]="opcionais.bancosCouro" 
+                (change)="check($event)"
                 name="bancosCouro"
+                value="Bancos de Couro"
                 class="w-4 h-4 text-blue-600 bg-gray-900 border-gray-700 rounded focus:ring-blue-500" />
               <label for="bancosCouro" class="text-sm text-gray-300 cursor-pointer">Bancos de Couro</label>
             </div>
@@ -298,8 +386,9 @@
               <input 
                 type="checkbox" 
                 id="tetoSolar" 
-                [(ngModel)]="opcionais.tetoSolar" 
+                (change)="check($event)"
                 name="tetoSolar"
+                value="Teto Solar"
                 class="w-4 h-4 text-blue-600 bg-gray-900 border-gray-700 rounded focus:ring-blue-500" />
               <label for="tetoSolar" class="text-sm text-gray-300 cursor-pointer">Teto Solar</label>
             </div>
@@ -308,8 +397,9 @@
               <input 
                 type="checkbox" 
                 id="controleTracao" 
-                [(ngModel)]="opcionais.controleTracao" 
+                 (change)="check($event)"
                 name="controleTracao"
+                value="Controle de Tração"
                 class="w-4 h-4 text-blue-600 bg-gray-900 border-gray-700 rounded focus:ring-blue-500" />
               <label for="controleTracao" class="text-sm text-gray-300 cursor-pointer">Controle de Tração</label>
             </div>

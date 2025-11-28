@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
-import { ReactiveFormsModule, FormsModule, FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule, FormGroup, Validators, FormBuilder, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Sidebar } from "../../shared/sidebar/sidebar";
-
-
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-cadastrar-carro',
@@ -16,43 +16,27 @@ export class CadastrarCarro {
 fotos: string[] = [];
 files: File[] = [];
 fb = inject(FormBuilder);
-// {
-//   "nome": "Onix Plus 1.0 Turbo",
-//   "marca": "Chevrolet",
-//   "modelo": "LTZ",
-//   "ano": 2023,
-//   "cor": "Branco",
-//   "tipo": "Sedan",
-//   "direcao": "Elétrica",
-//   "transmissao": "Manual",
-//   "motor": "1.4 Turbo",
-//   "portas": 4,
-//   "quilometragem": 8500,
-//   "placa": "7",
-//   "combustivel": "Flex",
-//   "opcionais": "Airbag,ABS,Multimídia,Câmera de Ré",
-//   "descricao": "Veículo praticamente novo, todas as revisões em concessionária.",
-//   "preco": 92500.00,
-//   "tipoDeVenda": "Vender"
-// }
+opcionaisArr: string[] = [];
+
+
 form = this.fb.group({
-    nome: ['',[Validators.required]],
-    marca: ['',[Validators.required]],
-    modelo: ['',[Validators.required]],
-    ano: ['',[Validators.required]],
-    cor: ['',[Validators.required]],
-    tipo: ['',[Validators.required]],
-    direcao: ['',[Validators.required]],
-    transmissao: ['',[Validators.required]],
-    motor: ['',[Validators.required]],
-    portas: ['',[Validators.required]],
-    quilometragem: ['',[Validators.required]],
-    placa: ['',[Validators.required]],
-    combustivel: ['',[Validators.required]],
-    opcionais: ['', [Validators.required]],
-    descricao: ['',[Validators.required]],
-    preco: ['',[Validators.required]],
-    tipoDeVenda: ['',[Validators.required]]
+    nome: new FormControl('',[Validators.required]),
+    marca: new FormControl('',[Validators.required]),
+    modelo: new FormControl('',[Validators.required]),
+    ano: new FormControl('',[Validators.required]),
+    cor: new FormControl('',[Validators.required]),
+    tipo: new FormControl('',[Validators.required]),
+    direcao: new FormControl('',[Validators.required]),
+    transmissao: new FormControl('',[Validators.required]),
+    motor: new FormControl('',[Validators.required]),
+    portas: new FormControl('',[Validators.required]),
+    quilometragem: new FormControl('',[Validators.required]),
+    placa: new FormControl('',[Validators.required]),
+    combustivel: new FormControl('',[Validators.required]),
+    opcionais: new FormControl('', [Validators.required]),
+    descricao: new FormControl('',[Validators.required]),
+    preco: new FormControl('',[Validators.required]),
+    tipoDeVenda: new FormControl('',[Validators.required])
 })
   
   // Form fields
@@ -87,14 +71,81 @@ form = this.fb.group({
   toastTitle: string = '';
   toastMessage: string = '';
 
-  constructor(private router: Router) {}
+  constructor(private router: Router,
+    private http: HttpClient
+  ) {}
 
-  onFileSelected() {
-    // PEGAR FOTOS
+  check(event : any) {
+  const opcionaisInput = event.target.checked;
+  const value = event.target.value
+  if(opcionaisInput === true) {
+    this.opcionaisArr.push(value)
+  }
+  if(opcionaisInput === false) {
+    for(var i = 0; i < this.opcionaisArr.length; i++) {
+      const found = (opc: any) => opc == value;
+      const index = this.opcionaisArr.findIndex(found);
+
+      this.opcionaisArr.splice(index,1);
+      break;
+    } 
+  }
+}
+
+  resetInput(event: any) {
+  event.target.value = null; // Permite selecionar o mesmo arquivo novamente
+}
+
+  onFileSelected(event : any) {
+
+     const selectedFiles = event.target.files;
+
+    this.files = [];
+    this.fotos = []; // limpa a lista de previews
+
+    for (let i = 0; i < selectedFiles.length; i++) {
+      const file = selectedFiles[i];
+      this.files.push(file);
+
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.fotos.push(e.target.result); // adiciona preview base64
+      };
+      reader.readAsDataURL(file);
+    }
+
+  }
+
+  handleRemoveFoto(index: number) {
+    this.fotos.splice(index, 1);
+    this.files.splice(index, 1);
   }
 
   onSumbit() {
-    // ENVIAR FORMULARIO
+    
+    const auth = sessionStorage.getItem('token');
+    const user = JSON.parse(auth as string);
+
+    const formData = new FormData();
+
+    this.form.value.opcionais = this.opcionaisArr.toString();
+
+    for(const file of this.files) {
+      formData.append('files',file);
+    }
+    formData.append('request', new Blob([JSON.stringify(this.form.value)], {type: 'application/json'}));
+
+    this.http.post(`${environment.apiCarbid}/carro/cadastrar`, formData, {headers: {Authorization: `Bearer ${user.token}`}})
+    .subscribe({
+      next: (resp : any) => {
+        console.log(resp);
+        this.router.navigate(['/meus-carros']);
+      },
+      error: (e) => {
+        console.log(e.error.message);
+      }
+    })
+
 
   }
 
@@ -124,10 +175,6 @@ form = this.fb.group({
     } else {
       this.showToast('Limite de fotos', 'Você pode adicionar no máximo 10 fotos');
     }
-  }
-
-  handleRemoveFoto(index: number): void {
-    this.fotos = this.fotos.filter((_, i) => i !== index);
   }
 
   voltar(): void {

@@ -9,6 +9,7 @@ import { ClientePage } from './components/admin/cliente-page/cliente-page';
 import { MeusCarros } from './components/pages/meus-carros/meus-carros';
 import { CadastrarCarro } from './components/pages/cadastrar-carro/cadastrar-carro';
 import { DetalhesDoCarro } from './components/pages/detalhes-do-carro/detalhes-do-carro';
+import { FavoriteCars } from './components/pages/favorite-cars/favorite-cars';
 
 export const routes: Routes = [
     {
@@ -27,6 +28,11 @@ export const routes: Routes = [
     {
         path: 'login',
         component: LoginPage
+    },
+    {
+        path:'favorite-cars',
+        component:FavoriteCars,
+        canActivate:[AuthGuard]
     },
     {
         path:'meus-carros',

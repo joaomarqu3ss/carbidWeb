@@ -137,14 +137,29 @@
             
             <!-- Avatar e Nome -->
             <div class="flex items-center gap-3 mb-6">
-              <div class="w-16 h-16 rounded-full bg-blue-600 flex items-center justify-center text-white text-2xl font-bold">
-                <!-- {{ getInitials(car.vendedor.nome) }} -->
-              </div>
-              <div>
-                <!-- <p class="font-semibold text-white">{{ car.vendedor.nome }}</p> -->
-                <p class="text-sm text-gray-400">Vendedor particular</p>
-              </div>
+  
+            <!-- Avatar -->
+            <div class="w-14 h-14 rounded-full overflow-hidden bg-gray-700 flex items-center justify-center">
+              <img 
+                *ngIf="vendedor()" 
+                [src]="fotoVendedor()" 
+                alt="Foto do vendedor"
+                class="w-full h-full object-cover"
+              />
+
+              <!-- Caso não tenha foto -->
+             
             </div>
+
+            <!-- Nome -->
+            <div>
+              <p class="font-semibold text-white">
+                {{ vendedor().dados.nomeCompleto || 'Vendedor' }}
+              </p>
+              <p class="text-sm text-gray-400">Vendedor particular</p>
+            </div>
+
+          </div>
 
             <!-- Opções de Contato -->
             <div class="space-y-3">
@@ -221,7 +236,7 @@
             </svg>
             <div class="text-left">
               <p class="font-medium">WhatsApp</p>
-              <p class="text-sm text-gray-400" *ngIf="car">{{ car.vendedor.telefone }}</p>
+              <p class="text-sm text-gray-400" *ngIf="carro()"> WhatsApp</p>
             </div>
           </button>
 
@@ -234,7 +249,7 @@
             </svg>
             <div class="text-left">
               <p class="font-medium">Telefone</p>
-              <p class="text-sm text-gray-400" *ngIf="car">{{ car.vendedor.telefone }}</p>
+              <p class="text-sm text-gray-400" *ngIf="carro()">{{vendedor().dados.telefone}}</p>
             </div>
           </button>
 
@@ -247,7 +262,7 @@
             </svg>
             <div class="text-left">
               <p class="font-medium">E-mail</p>
-              <p class="text-sm text-gray-400" *ngIf="car">{{ car.vendedor.email }}</p>
+              <p class="text-sm text-gray-400" *ngIf="carro()">{{vendedor().email}}</p>
             </div>
           </button>
 

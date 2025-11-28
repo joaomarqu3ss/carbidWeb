@@ -42,7 +42,7 @@ export class ClientePage {
 
     const idParam = this.acdRouted.snapshot.params['id'];
     
-    this.http.get(`${environment.apiUser}/${idParam}`)
+    this.http.get(`${environment.apiUser}/buscar-usuario/${idParam}`)
     .subscribe({
       next: (resp : any) => {
         this.nomeUsuario.set(resp.dados.nomeCompleto);
@@ -65,7 +65,7 @@ export class ClientePage {
       }
     })
 
-    this.http.get(`${environment.apiUser}/foto-perfil/${idParam}`, {responseType : 'blob', headers : {Authorization: `Bearer ${user.token}` } })
+    this.http.get(`${environment.apiUser}/foto-perfil/${idParam}`, {responseType : 'blob' })
     .subscribe({
       next: (resp : Blob) => {
           const reader = new FileReader()
