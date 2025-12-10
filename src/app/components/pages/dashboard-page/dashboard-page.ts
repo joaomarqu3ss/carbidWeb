@@ -37,9 +37,9 @@ export class DashboardPage {
 
    cars: CarData[] = [];
   filteredCars: CarData[] = [];
-  toastVisible = false;
-  toastMessage = '';
-  toastTitle = '';
+  toastVisible = signal(false);
+  toastMessage = signal('');
+  toastTitle = signal('');
 
   // Filtros
   searchTerm = '';
@@ -225,13 +225,20 @@ export class DashboardPage {
   }
 
   handleFavorite(id: string): void {
-    const car = this.carros().find(c => c.id === id);
-    if (car) {
-      this.showToast(
+     const auth = sessionStorage.getItem('token');
+     const user = JSON.parse(auth as string);
+    this.http.post(`${environment.apiCarbid}/carro/favoritar/${id}`,null, {headers: {Authorization: `Bearer ${user.token}`}})
+    .subscribe({
+      next: (resp : any) => {
+        this.showToast(
         'Adicionado aos Favoritos',
-        `${car.marca} ${car.modelo} foi adicionado aos seus favoritos.`
+        resp
       );
-    }
+      },
+      error: (e) => {
+        console.log(e.error.message);
+      }
+    });
   }
 
   handleViewDetails(id: string): void {
@@ -246,12 +253,12 @@ export class DashboardPage {
   }
 
   showToast(title: string, message: string): void {
-    this.toastTitle = title;
-    this.toastMessage = message;
-    this.toastVisible = true;
+    this.toastTitle.set(title);
+    this.toastMessage.set(message);
+    this.toastVisible.set(true);
 
     setTimeout(() => {
-      this.toastVisible = false;
+      this.toastVisible.set(false);
     }, 3000);
   }
 }

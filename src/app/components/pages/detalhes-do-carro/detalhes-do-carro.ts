@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, Signal, signal, WritableSignal } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Sidebar } from "../../shared/sidebar/sidebar";
 import { HttpClient } from '@angular/common/http';
@@ -17,15 +17,22 @@ export class DetalhesDoCarro {
  
   currentImageIndex: number = 0;
   showContactDialog: boolean = false;
+  showPropostaDialog: boolean = false;
+    valorProposta: string = '';
+    vendedorId = signal(false);
 
   carro = signal<any>(null);
   id = signal<string>('');
   fotos = signal<string[]>([]);
   vendedor = signal<any>(null);
   fotoVendedor = signal('');
+   fb = inject(FormBuilder);
+  form = this.fb.group({
+    valor: ['',[Validators.required]]
+  })
 
   // Toast
-  toastVisible: boolean = false;
+  toastVisible = signal<boolean>(false);
   toastTitle: string = '';
   toastMessage: string = '';
 
@@ -53,6 +60,11 @@ export class DetalhesDoCarro {
             .subscribe({
               next: (resp : any) => {
                 this.vendedor.set(resp);
+
+                if(user.id === resp.id) {
+                  this.vendedorId.set(true);
+                }
+
                 // console.log(this.vendedor())
 
                 this.http.get(`${environment.apiUser}/foto-perfil/${resp.id}`, {responseType: 'blob'})
@@ -92,6 +104,25 @@ export class DetalhesDoCarro {
 
   }
 
+  sendOffer() {
+    const auth = sessionStorage.getItem('token');
+    const user = JSON.parse(auth as string)
+
+    const idParam = this.route.snapshot.params['id'];
+
+    this.http.post(`${environment.apiCarbid}/offer/enviar/${idParam}`, this.form.value, {headers: {Authorization: `Bearer ${user.token}`}})
+    .subscribe({
+      next: () => {
+          this.showToast('Proposta enviada!', 'O vendedor será notificado da sua proposta.');
+          this.closePropostaDialog();
+      },
+      error: (e) => {
+        console.log(e.error.message);
+      } 
+
+    })
+  }
+
   formatPrice(price: number): string {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
@@ -121,9 +152,47 @@ export class DetalhesDoCarro {
     }
   }
 
+
+  openPropostaDialog(): void {
+    this.showPropostaDialog = true;
+  }
+
+  closePropostaDialog(): void {
+    this.showPropostaDialog = false;
+    this.valorProposta = '';
+  }
+
+  handleValorChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    let value = input.value.replace(/\D/g, '');
+    
+    if (value) {
+      const numValue = parseInt(value) / 100;
+      this.valorProposta = numValue.toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+      });
+    } else {
+      this.valorProposta = '';
+    }
+  }
+
+  handleEnviarProposta(): void {
+    if (!this.valorProposta) {
+      this.showToast('Erro', 'Por favor, informe o valor da proposta');
+      return;
+    }
+
+    // Aqui será implementada a lógica de envio da proposta ao backend
+    this.showToast('Proposta enviada!', 'O vendedor será notificado da sua proposta.');
+    this.closePropostaDialog();
+  }
+
   openContactDialog(): void {
     this.showContactDialog = true;
   }
+
+
 
   closeContactDialog(): void {
     this.showContactDialog = false;
@@ -135,16 +204,16 @@ export class DetalhesDoCarro {
   }
 
   handleProposal(): void {
-    this.showToast('Fazer Proposta', 'Funcionalidade de propostas será implementada em breve.');
+    this.openPropostaDialog();
   }
 
   showToast(title: string, message: string): void {
     this.toastTitle = title;
     this.toastMessage = message;
-    this.toastVisible = true;
+    this.toastVisible.set(true)
     
     setTimeout(() => {
-      this.toastVisible = false;
+      this.toastVisible.set(false);
     }, 3000);
   }
 

@@ -79,7 +79,7 @@ fecharMenuUsuario() {
   }
 
   abrirConfiguracoes() {
-    this.router.navigate(['/config/profile'])
+    this.router.navigate(['/config'])
    
   }
 }

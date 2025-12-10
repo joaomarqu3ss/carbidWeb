@@ -18,7 +18,7 @@ export class MeusCarros {
 cars = signal<any[]>([]);
 fotoCapa = signal<Record<string, string>>({})
   // Toast
-  toastVisible: boolean = false;
+  toastVisible = signal<boolean>(false);
   toastTitle: string = '';
   toastMessage: string = '';
 
@@ -32,7 +32,7 @@ fotoCapa = signal<Record<string, string>>({})
     const auth = sessionStorage.getItem('token');
     const user = JSON.parse(auth as string);
 
-    this.http.get(`${environment.apiCarbid}/carro`, {headers: {Authorization: `Bearer ${user.token}`}})
+    this.http.get(`${environment.apiCarbid}/carro?pagina=0&tamanho=10&ordenarPor=id&direcao=ASC`, {headers: {Authorization: `Bearer ${user.token}`}})
     .subscribe({
       next: (resp : any) => {
         
@@ -84,10 +84,10 @@ fotoCapa = signal<Record<string, string>>({})
   showToast(title: string, message: string): void {
     this.toastTitle = title;
     this.toastMessage = message;
-    this.toastVisible = true;
+    this.toastVisible.set(true)
     
     setTimeout(() => {
-      this.toastVisible = false;
+      this.toastVisible.set(false)
     }, 3000);
   }
 

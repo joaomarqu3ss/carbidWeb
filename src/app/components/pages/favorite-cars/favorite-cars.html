@@ -53,13 +53,11 @@
               class="absolute top-2 right-2 px-3 py-1 text-white text-xs font-semibold rounded-full bg-blue-600">
               {{ car.rentorsell }}
             </span>
-            <button (click)="handleFavorite(car.id)"
+            <button (click)="desfavoritar(car.id)"
               class="absolute top-2 left-2 p-2 bg-gray-900/80 backdrop-blur-sm rounded-full hover:bg-gray-900 transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-              </svg>
+              <svg class="delete-svgIcon" viewBox="0 0 448 512">
+                    <path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"></path>
+                  </svg>
             </button>
           </div>
 

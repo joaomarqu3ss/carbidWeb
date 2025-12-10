@@ -1,0 +1,436 @@
+<div class="flex min-h-screen bg-gray-900">
+
+  <app-sidebar></app-sidebar>
+
+  <!-- Main Content -->
+  <main class="flex-1 md:ml-64 p-6 bbh-sans-bartle-regular">
+
+    <div class="max-w-4xl mx-auto">
+      
+      <!-- Botão Voltar -->
+      <button 
+        (click)="voltar()"
+        class="mb-6 px-4 py-2 text-gray-400 hover:text-white transition-colors flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Voltar
+      </button>
+
+      <!-- Título -->
+      <h1 class="text-3xl font-bold text-white mb-8">Cadastrar novo carro</h1>
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
+
+        <!-- Card: Fotos do Veículo -->
+        <div class="bg-gray-800 border border-gray-700 rounded-lg p-6">
+  <h2 class="text-xl font-bold text-white mb-4">Fotos do Veículo</h2>
+
+  <div class="space-y-4">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+
+      <!-- Fotos já adicionadas -->
+      <div *ngFor="let foto of fotos; let i = index" class="relative group">
+        <img 
+          [src]="foto" 
+          [alt]="'Foto ' + (i + 1)"
+          class="w-full h-32 object-cover rounded-lg border border-gray-700" />
+
+        <button
+          type="button"
+          (click)="handleRemoveFoto(i)"
+          class="absolute top-2 right-2 p-1 bg-red-600 hover:bg-red-700 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Botão adicionar foto -->
+      <button
+        type="button"
+        (click)="fileInput.click()"
+        class="h-32 border-2 border-dashed border-gray-600 hover:border-blue-500 rounded-lg bg-gray-900 hover:bg-gray-800 transition-colors flex flex-col items-center justify-center gap-2 text-gray-400 hover:text-blue-500">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+        </svg>
+        <span class="text-xs">Adicionar</span>
+      </button>
+
+      <!-- INPUT REAL → fica invisível -->
+      <input 
+        type="file"
+        #fileInput
+        accept="image/*"
+        multiple
+        class="hidden"
+        (change)="onFileSelected($event)"
+        (click)="resetInput($event)"
+      />
+    </div>
+
+    <p class="text-sm text-gray-400">
+      Adicione até 10 fotos do veículo. A primeira foto será a capa do anúncio.
+    </p>
+  </div>
+</div>
+
+        <!-- Card: Informações Básicas -->
+        <div class="bg-gray-800 border border-gray-700 rounded-lg p-6">
+          <h2 class="text-xl font-bold text-white mb-4">Informações Básicas</h2>
+          
+          <div class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+              <div>
+                <label class="block text-sm font-semibold text-gray-400 mb-2">Nome</label>
+                <input 
+                  type="text" 
+                  formControlName="nome"
+                  name="marca"
+                  placeholder="Ex: Toyota"
+                  required
+                  class="w-full px-4 py-2 bg-gray-900 border border-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+
+              <div>
+                <label class="block text-sm font-semibold text-gray-400 mb-2">Motor</label>
+                <input 
+                  type="text" 
+                  formControlName="motor"
+                  name="marca"
+                  placeholder="Ex: 1.0 Turbo"
+                  required
+                  class="w-full px-4 py-2 bg-gray-900 border border-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-400 mb-2">Final da placa</label>
+                <input 
+                  type="text" 
+                  formControlName="placa"
+                  name="marca"
+                  placeholder="Ex: H67"
+                  required
+                  class="w-full px-4 py-2 bg-gray-900 border border-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+
+              <div>
+                <label class="block text-sm font-semibold text-gray-400 mb-2">Portas</label>
+                <input 
+                  type="text" 
+                  formControlName="portas"
+                  name="marca"
+                  placeholder="Ex: 4"
+                  required
+                  class="w-full px-4 py-2 bg-gray-900 border border-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+
+              <div>
+                <label class="block text-sm font-semibold text-gray-400 mb-2">Tipo</label>
+                <input 
+                  type="text" 
+                  formControlName="tipo"
+                  name="marca"
+                  placeholder="Ex: SUV"
+                  required
+                  class="w-full px-4 py-2 bg-gray-900 border border-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+
+              <div>
+                <label class="block text-sm font-semibold text-gray-400 mb-2">Transmissão</label>
+                <input 
+                  type="text" 
+                  formControlName="transmissao"
+                  name="marca"
+                  placeholder="Ex: Manual"
+                  required
+                  class="w-full px-4 py-2 bg-gray-900 border border-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+              
+              <!-- Marca -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-400 mb-2">Marca </label>
+                <input 
+                  type="text" 
+                  formControlName="marca"
+                  name="marca"
+                  placeholder="Ex: Toyota"
+                  required
+                  class="w-full px-4 py-2 bg-gray-900 border border-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-400 mb-2">Direcão </label>
+                <input 
+                  type="text" 
+                  formControlName="direcao"
+                  name="direcao"
+                  placeholder="Ex: Elétrica"
+                  required
+                  class="w-full px-4 py-2 bg-gray-900 border border-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+
+              <!-- Modelo -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-400 mb-2">Modelo </label>
+                <input 
+                  type="text" 
+                  formControlName="modelo"
+                  name="modelo"
+                  placeholder="Ex: Corolla XEi"
+                  required
+                  class="w-full px-4 py-2 bg-gray-900 border border-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+
+              <!-- Ano -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-400 mb-2">Ano </label>
+                <input 
+                  type="number" 
+                  formControlName="ano"
+                  name="ano"
+                  placeholder="Ex: 2023"
+                  required
+                  class="w-full px-4 py-2 bg-gray-900 border border-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+
+              <!-- Cor -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-400 mb-2">Cor </label>
+                <input 
+                  type="text" 
+                  formControlName="cor"
+                  name="cor"
+                  placeholder="Ex: Preto"
+                  required
+                  class="w-full px-4 py-2 bg-gray-900 border border-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+
+              <!-- Quilometragem -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-400 mb-2">Quilometragem (km) </label>
+                <input 
+                  type="number" 
+                  formControlName="quilometragem"
+                  name="km"
+                  placeholder="Ex: 15000"
+                  required
+                  class="w-full px-4 py-2 bg-gray-900 border border-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+
+              <!-- Tipo de Anúncio -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-400 mb-2">Tipo de Anúncio </label>
+                <select 
+                  formControlName="tipoDeVenda"
+                  name="tipo"
+                  required
+                  class="w-full px-4 py-2 bg-gray-900 border border-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <option value="">Selecione</option>
+                  <option value="Vender">À Venda</option>
+                  <option value="Alugar">Aluguel</option>
+                  <option value="Trocar">Trocar</option>
+                </select>
+              </div>
+
+              <!-- Preço -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-400 mb-2">Preço (R$) </label>
+                <input 
+                  type="number" 
+                  formControlName="preco"
+                  name="preco"
+                  placeholder="Ex: 125000"
+                  required
+                  class="w-full px-4 py-2 bg-gray-900 border border-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+
+              <!-- Combustível -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-400 mb-2">Combustível </label>
+                <select 
+                  formControlName="combustivel"
+                  name="combustivel"
+                  required
+                  class="w-full px-4 py-2 bg-gray-900 border border-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  <option value="">Selecione</option>
+                  <option value="Flex">Flex</option>
+                  <option value="Gasolina">Gasolina</option>
+                  <option value="Diesel">Diesel</option>
+                  <option value="Elétrico">Elétrico</option>
+                  <option value="Híbrido">Híbrido</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Descrição -->
+            <div>
+              <label class="block text-sm font-semibold text-gray-400 mb-2">Descrição</label>
+              <textarea 
+                formControlName="descricao" 
+                name="descricao"
+                rows="4"
+                placeholder="Descreva as características e condições do veículo..."
+                class="w-full px-4 py-2 bg-gray-900 border border-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card: Itens Opcionais -->
+        <div class="bg-gray-800 border border-gray-700 rounded-lg p-6">
+          <h2 class="text-xl font-bold text-white mb-4">Itens Opcionais</h2>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            
+            <div class="flex items-center space-x-2">
+              <input 
+                type="checkbox" 
+                id="arcondicionado" 
+                name="arcondicionado"
+                (change)="check($event)"
+                value="Ar Condicionado"
+                class="w-4 h-4 text-blue-600 bg-gray-900 border-gray-700 rounded focus:ring-blue-500" />
+              <label for="arCondicionado" class="text-sm text-gray-300 cursor-pointer">Ar Condicionado</label>
+            </div>
+
+
+            <div class="flex items-center space-x-2">
+              <input 
+                type="checkbox" 
+                id="vidroseletricos" 
+               (change)="check($event)"
+                name="vidroseletricos"
+                value="Vidros Elétricos"
+                class="w-4 h-4 text-blue-600 bg-gray-900 border-gray-700 rounded focus:ring-blue-500" />
+              <label for="vidrosEletricos" class="text-sm text-gray-300 cursor-pointer">Vidros Elétricos</label>
+            </div>
+
+            <div class="flex items-center space-x-2">
+              <input 
+                type="checkbox" 
+                id="travaseletricas" 
+                 (change)="check($event)"
+                name="travaseletricas"
+                value="Travas Elétricas"
+                class="w-4 h-4 text-blue-600 bg-gray-900 border-gray-700 rounded focus:ring-blue-500" />
+              <label for="travasEletricas" class="text-sm text-gray-300 cursor-pointer">Travas Elétricas</label>
+            </div>
+
+            <div class="flex items-center space-x-2">
+              <input 
+                type="checkbox" 
+                id="airbag" 
+               (change)="check($event)"
+                name="airbag"
+                value="Airbag"
+                class="w-4 h-4 text-blue-600 bg-gray-900 border-gray-700 rounded focus:ring-blue-500" />
+              <label for="airbag" class="text-sm text-gray-300 cursor-pointer">Airbag</label>
+            </div>
+
+            <div class="flex items-center space-x-2">
+              <input 
+                type="checkbox" 
+                id="abs" 
+                (change)="check($event)"
+                name="abs"
+                value="ABS"
+                class="w-4 h-4 text-blue-600 bg-gray-900 border-gray-700 rounded focus:ring-blue-500" />
+              <label for="abs" class="text-sm text-gray-300 cursor-pointer">ABS</label>
+            </div>
+
+            <div class="flex items-center space-x-2">
+              <input 
+                type="checkbox" 
+                id="cameradere" 
+                (change)="check($event)"
+                name="cameradere"
+                value="Câmera de Ré"
+                class="w-4 h-4 text-blue-600 bg-gray-900 border-gray-700 rounded focus:ring-blue-500" />
+              <label for="cameraRe" class="text-sm text-gray-300 cursor-pointer">Câmera de Ré</label>
+            </div>
+
+            <div class="flex items-center space-x-2">
+              <input 
+                type="checkbox" 
+                id="sensordeestacionamento" 
+                 (change)="check($event)"
+                name="sensordeestacionamento"
+                value="Sensor de Estacionamento"
+                class="w-4 h-4 text-blue-600 bg-gray-900 border-gray-700 rounded focus:ring-blue-500" />
+              <label for="sensorEstacionamento" class="text-sm text-gray-300 cursor-pointer">Sensor de Estacionamento</label>
+            </div>
+
+            <div class="flex items-center space-x-2">
+              <input 
+                type="checkbox" 
+                id="multimidia" 
+               (change)="check($event)"
+                name="multimidia"
+                value="Multimídia"
+                class="w-4 h-4 text-blue-600 bg-gray-900 border-gray-700 rounded focus:ring-blue-500" />
+              <label for="multimidia" class="text-sm text-gray-300 cursor-pointer">Multimídia</label>
+            </div>
+
+            <div class="flex items-center space-x-2">
+              <input 
+                type="checkbox" 
+                id="bancosdecouro" 
+                (change)="check($event)"
+                name="bancosdecouro"
+                value="Bancos de Couro"
+                class="w-4 h-4 text-blue-600 bg-gray-900 border-gray-700 rounded focus:ring-blue-500" />
+              <label for="bancosCouro" class="text-sm text-gray-300 cursor-pointer">Bancos de Couro</label>
+            </div>
+
+            <div class="flex items-center space-x-2">
+              <input 
+                type="checkbox" 
+                id="tetosolar" 
+                (change)="check($event)"
+                name="tetosolar"
+                value="Teto Solar"
+                class="w-4 h-4 text-blue-600 bg-gray-900 border-gray-700 rounded focus:ring-blue-500" />
+              <label for="tetoSolar" class="text-sm text-gray-300 cursor-pointer">Teto Solar</label>
+            </div>
+
+            <div class="flex items-center space-x-2">
+              <input 
+                type="checkbox" 
+                id="controledetracao" 
+                 (change)="check($event)"
+                name="controledetracao"
+                value="Controle de Tração"
+                class="w-4 h-4 text-blue-600 bg-gray-900 border-gray-700 rounded focus:ring-blue-500" />
+              <label for="controleTracao" class="text-sm text-gray-300 cursor-pointer">Controle de Tração</label>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Botões de Ação -->
+        <div class="flex gap-4 justify-end">
+          <button 
+            type="button"
+            (click)="voltar()"
+            class="px-6 py-3 bg-gray-800 border border-gray-700 text-white font-semibold rounded-lg hover:bg-gray-700 transition-colors">
+            Cancelar
+          </button>
+          <button 
+            type="submit" 
+            class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors">
+            Publicar Anúncio
+          </button>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- Toast Notification -->
+    <div *ngIf="toastVisible()"
+      class="fixed bottom-4 right-4 bg-gray-800 border border-gray-700 rounded-lg shadow-2xl p-4 max-w-sm animate-slide-up z-50">
+      <h4 class="text-white font-bold mb-1">{{ toastTitle }}</h4>
+      <p class="text-gray-300 text-sm">{{ toastMessage }}</p>
+    </div>
+
+  </main>
+
+</div>

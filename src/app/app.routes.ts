@@ -10,6 +10,9 @@ import { MeusCarros } from './components/pages/meus-carros/meus-carros';
 import { CadastrarCarro } from './components/pages/cadastrar-carro/cadastrar-carro';
 import { DetalhesDoCarro } from './components/pages/detalhes-do-carro/detalhes-do-carro';
 import { FavoriteCars } from './components/pages/favorite-cars/favorite-cars';
+import { Offers } from './components/pages/offers/offers';
+import { ConfigUser } from './components/pages/config-user/config-user';
+import { EditarCarro } from './components/pages/editar-carro/editar-carro';
 
 export const routes: Routes = [
     {
@@ -35,6 +38,16 @@ export const routes: Routes = [
         canActivate:[AuthGuard]
     },
     {
+        path:'editar-carro/:id',
+        component:EditarCarro,
+        canActivate:[AuthGuard]
+    },
+    {
+        path:'config',
+        component:ConfigUser,
+        canActivate:[AuthGuard]
+    },
+    {
         path:'meus-carros',
         component:MeusCarros,
         canActivate:[AuthGuard]
@@ -43,6 +56,11 @@ export const routes: Routes = [
         path:'cadastrar-carro',
         component:CadastrarCarro,
         canActivate:[AuthGuard]
+    },
+    {
+        path:'offers',
+        component:Offers,
+        canActivate: [AuthGuard]
     },
     {
         path:'detalhes-do-carro/:id',
