@@ -5,6 +5,8 @@ import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angu
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
+import { ChatService } from '../../chat-service/chat-service';
+import { ChatRoom } from '../../chat-service/models/chat-room.model';
 
 
 interface Comprador {
@@ -51,7 +53,6 @@ export class Offers {
  nomeCarro = signal('');
  fotoCapa: WritableSignal<Record<string, string>> = signal({});
  visualizacao: 'recebidas' | 'enviadas' = 'recebidas';
-
   propostaSelecionada: string | null = null;
   novaMensagem: string = '';
   mensagensMap: Record<string, Mensagem[]> = {};
@@ -63,6 +64,14 @@ export class Offers {
   toastTitle: string = '';
   toastMessage: string = '';
   toastVariant: 'success' | 'error' = 'success';
+  
+  chatRooms = signal<ChatRoom[]>([]);
+  loading = signal<boolean>(false);
+  idUsuario = signal('');
+
+  constructor(
+    private chatService: ChatService
+  ) {}
 
   ngOnInit(): void {
 
@@ -237,6 +246,8 @@ export class Offers {
       ]
     };
 
+    this.idUsuario.set(user.id);
+
     this.http.get(`${environment.apiCarbid}/offer/stats`, {headers: {Authorization: `Bearer ${user.token}`}})
     .subscribe({
       next: (resp : any) => {
@@ -307,26 +318,6 @@ export class Offers {
     }
   });
  } 
-
- get propostasSemanais(): number {
-    const lista = this.visualizacao === 'recebidas' ? this.propostas : this.minhasPropostas;
-    return lista.filter(p => {
-      const diffDias = Math.floor(
-        (Date.now() - new Date(p.data).getTime()) / (1000 * 60 * 60 * 24)
-      );
-      return diffDias <= 7;
-    }).length;
-  }
-
-  get propostasPendentes(): number {
-    const lista = this.visualizacao === 'recebidas' ? this.propostas : this.minhasPropostas;
-    return lista.filter(p => p.status === 'pendente').length;
-  }
-
-  get propostasAceitas(): number {
-    const lista = this.visualizacao === 'recebidas' ? this.propostas : this.minhasPropostas;
-    return lista.filter(p => p.status === 'aceita').length;
-  }
 
   get propostaAtual(): Proposta | undefined {
     const lista = this.visualizacao === 'recebidas' ? this.propostas : this.minhasPropostas;
@@ -404,6 +395,23 @@ export class Offers {
       minute: '2-digit'
     });
   }
+
+  loadChatRooms() {
+    if(!this.idUsuario()) return;
+    this.loading.set(true)
+    this.chatService.listChatRoomsForUser(this.idUsuario())
+    .subscribe({
+      next: (rooms : any) => {
+        this.chatRooms.set(rooms);
+        this.loading.set(false)
+      },
+      error: (e) => {
+        console.log(e.error.message);
+        this.loading.set(false)
+      }
+    })
+  }
+
 
   getInitials(id : string): any {
     

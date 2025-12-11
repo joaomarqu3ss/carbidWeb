@@ -1,5 +1,6 @@
 export const environment = {
     apiUser: '',
     apiEndereco:'',
-    apiCarbid: ''
+    apiCarbid: '',
+    apiChat: ''
 };

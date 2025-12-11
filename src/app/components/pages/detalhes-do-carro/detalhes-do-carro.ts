@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Sidebar } from "../../shared/sidebar/sidebar";
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
+import { ChatService } from '../../chat-service/chat-service';
 
 
 @Component({
@@ -19,12 +20,13 @@ export class DetalhesDoCarro {
   showContactDialog: boolean = false;
   showPropostaDialog: boolean = false;
     valorProposta: string = '';
-    vendedorId = signal(false);
+    vendedorIdExits = signal(false);
 
   carro = signal<any>(null);
   id = signal<string>('');
   fotos = signal<string[]>([]);
   vendedor = signal<any>(null);
+  idVendedor = signal('');
   fotoVendedor = signal('');
    fb = inject(FormBuilder);
   form = this.fb.group({
@@ -40,7 +42,8 @@ export class DetalhesDoCarro {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private http: HttpClient
+    private http: HttpClient,
+    private chatService: ChatService
   ) {}
 
   ngOnInit(): void {
@@ -60,9 +63,10 @@ export class DetalhesDoCarro {
             .subscribe({
               next: (resp : any) => {
                 this.vendedor.set(resp);
+                this.idVendedor.set(resp.usuarioId);
 
                 if(user.id === resp.id) {
-                  this.vendedorId.set(true);
+                  this.vendedorIdExits.set(true);
                 }
 
                 // console.log(this.vendedor())
@@ -112,7 +116,15 @@ export class DetalhesDoCarro {
 
     this.http.post(`${environment.apiCarbid}/offer/enviar/${idParam}`, this.form.value, {headers: {Authorization: `Bearer ${user.token}`}})
     .subscribe({
-      next: () => {
+      next: (resp : any) => {
+          
+        const chatRoomReq = {
+            roomId: resp.id,
+            usuario1: user.id,
+            usuario2: this.idVendedor()
+          }
+
+          this.chatService.createChatRoom(chatRoomReq)
           this.showToast('Proposta enviada!', 'O vendedor será notificado da sua proposta.');
           this.closePropostaDialog();
       },
