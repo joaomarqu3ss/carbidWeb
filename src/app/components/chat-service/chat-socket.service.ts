@@ -1,90 +1,76 @@
-import { Injectable, OnDestroy } from '@angular/core';
-import { Client, IMessage, StompSubscription } from '@stomp/stompjs';
+import { Injectable } from '@angular/core';
 import SockJS from 'sockjs-client';
-import { Subject, Observable } from 'rxjs';
-import { Message } from './models/message.model';
-import { environment } from '../../../environments/environment';
+import { Client, Message } from '@stomp/stompjs';
+import { EnviarMensagemRequest, ChatMessage } from './dtos/mensagem-request';
+import { BehaviorSubject, map, Observable, timestamp } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChatSocketService  {
-    
-  private client: Client | null = null;
-  private connected = false;
-  private messageSubject = new Subject<Message>();
-  private subscriptions: StompSubscription[] = [];
 
-  messages$: Observable<Message> = this.messageSubject.asObservable();
+  stompClient: Client | null = null;
+  private connected = false
+  private messagesSubject = new BehaviorSubject<any>(null);
+  
+  message$ = this.messagesSubject.asObservable();
+  
+  private connectionSubject = new BehaviorSubject<boolean>(false);
 
-    connect(token: string) {
-    if (this.connected) return;
+  public connectionStatus$ = this.connectionSubject.asObservable();
 
-    this.client = new Client({
-      // use SockJS factory so SockJS fallback works
-      webSocketFactory: () => new SockJS(`${environment.apiChat}/ws`),
-      connectHeaders: {
-        Authorization: `Bearer ${token}`
-      },
-      // automatic reconnect
+  connect() {
+    const socket = new SockJS('http://localhost:8082/ws');
+
+    this.stompClient = new Client({
+      webSocketFactory: () => socket,
       reconnectDelay: 5000,
-      onConnect: frame => {
-        this.connected = true;
-        console.log('[STOMP] conectado', frame);
+      debug: str => console.log(str)
+    });
 
-        // subscribe to the user queue for private messages
-        // /user/queue/messages is the path we used in backend examples
-        const sub = this.client!.subscribe('/user/queue/messages', (msg: IMessage) => {
-          if (msg.body) {
-            try {
-              const payload = JSON.parse(msg.body) as Message;
-              this.messageSubject.next(payload);
-            } catch (err) {
-              console.warn('Invalid message body', err);
-            }
-          }
-        });
+    this.stompClient.onConnect = (frame) => {
+      console.log('Connected to WebSocket!');
 
-        this.subscriptions.push(sub);
-      },
-      onStompError: frame => {
-        console.error('[STOMP] Broker error', frame);
-      },
-      onWebSocketError: err => {
-        console.error('[STOMP] WebSocket error', err);
+      this.connectionSubject.next(true);
+
+      this.stompClient?.subscribe('/user/queues/messages', (message : Message) => {
+        this.messagesSubject.next(JSON.parse(message.body))
+      });
+    };
+
+    this.stompClient.onStompError = (frame) => {
+      console.error('Broker error: ' + frame.headers['message']);
+      console.error('Details ' + frame.body);
+    };
+
+    this.stompClient?.activate()
+  };
+
+  sendMessage(payload : any) {
+
+    if(this.stompClient && this.stompClient.connected) {
+
+      const chatMessage = {
+        offerId: payload.offerId,
+        senderId: payload.senderId,
+        recipientId: payload.recipientId,
+        content: payload.content
       }
-    });
 
-    this.client.activate();
-  }
+      console.log('Send message to ' + payload.recipientId);
+      this.stompClient.publish({
+        destination: '/app/chat.send',
+        body: JSON.stringify(chatMessage)
+      });
 
-  disconnect() {
-    if (!this.client) return;
-    this.subscriptions.forEach(s => s.unsubscribe());
-    this.client.deactivate();
-    this.client = null;
-    this.connected = false;
-  }
-
-  send(destination: string, body: any) {
-    if (!this.client || !this.connected) {
-      console.warn('STOMP não está conectado — message não enviada via WS');
-      return;
     }
-    this.client.publish({
-      destination,
-      body: JSON.stringify(body)
-    });
+    else {
+      console.error('WebSocket is not connected')
+    }
+
   }
 
-  // helper to send chat message via the /app/chat.send mapping used on backend
-  sendChatMessage(receiverId: string, content: string) {
-    this.send('/app/chat.send', { receiverId, content });
-  }
-
-  ngOnDestroy() {
-    this.disconnect();
-    this.messageSubject.complete();
-  }
-
+ 
+  
 }

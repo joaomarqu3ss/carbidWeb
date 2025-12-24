@@ -5,7 +5,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Sidebar } from "../../shared/sidebar/sidebar";
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
-import { ChatService } from '../../chat-service/chat-service';
 
 
 @Component({
@@ -43,10 +42,10 @@ export class DetalhesDoCarro {
     private route: ActivatedRoute,
     private router: Router,
     private http: HttpClient,
-    private chatService: ChatService
   ) {}
 
   ngOnInit(): void {
+
     
     const auth = sessionStorage.getItem('token')
     const user = JSON.parse(auth as string);
@@ -63,13 +62,12 @@ export class DetalhesDoCarro {
             .subscribe({
               next: (resp : any) => {
                 this.vendedor.set(resp);
-                this.idVendedor.set(resp.usuarioId);
+                this.idVendedor.set(resp.id);
 
                 if(user.id === resp.id) {
                   this.vendedorIdExits.set(true);
                 }
 
-                // console.log(this.vendedor())
 
                 this.http.get(`${environment.apiUser}/foto-perfil/${resp.id}`, {responseType: 'blob'})
                 .subscribe({
@@ -113,18 +111,11 @@ export class DetalhesDoCarro {
     const user = JSON.parse(auth as string)
 
     const idParam = this.route.snapshot.params['id'];
-
     this.http.post(`${environment.apiCarbid}/offer/enviar/${idParam}`, this.form.value, {headers: {Authorization: `Bearer ${user.token}`}})
     .subscribe({
       next: (resp : any) => {
           
-        const chatRoomReq = {
-            roomId: resp.id,
-            usuario1: user.id,
-            usuario2: this.idVendedor()
-          }
-
-          this.chatService.createChatRoom(chatRoomReq)
+          
           this.showToast('Proposta enviada!', 'O vendedor será notificado da sua proposta.');
           this.closePropostaDialog();
       },

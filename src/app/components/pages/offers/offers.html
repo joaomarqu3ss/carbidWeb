@@ -107,7 +107,6 @@
                 <!-- Imagem do carro -->
                 <img
                   [src]="fotoCapa()[proposta.carroId]"
-                  [alt]="nomeCarro()"
                   class="w-16 h-16 object-cover rounded-lg" />
                 
                 <!-- Conteúdo -->
@@ -159,16 +158,15 @@
                   <div class="flex items-center gap-3">
                     <!-- Avatar -->
                     <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
-                      {{ getInitials(propostaAtual.comprador.nome) }}
+                      <img [src]="fotoVendedor()" alt="">
                     </div>
                     <div>
-                      <p class="font-semibold text-white">{{ propostaAtual.comprador.nome }}</p>
-                      <p class="text-sm text-gray-400">{{ propostaAtual.carroNome }}</p>
+                      <p class="font-semibold text-white">{{ propostaAtual.nomeComprador }}</p>
                     </div>
                   </div>
 
                   <!-- Botões Aceitar/Recusar -->
-                  <div *ngIf="propostaAtual.status === 'pendente' && visualizacao === 'recebidas'" class="flex gap-2">
+                  <div *ngIf="propostaAtual.status === 'Pendente' && visualizacao === 'recebidas'" class="flex gap-2">
                     <button
                       (click)="handleAceitarProposta(propostaAtual.id)"
                       class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold rounded-lg transition-colors flex items-center gap-1">
@@ -190,31 +188,39 @@
               </div>
 
               <!-- Mensagens -->
-              <div class="flex-1 p-4 overflow-y-auto max-h-[450px]">
-                <div class="space-y-4">
-                  <div 
-                    *ngFor="let msg of mensagensAtuais"
-                    [class.justify-end]="msg.remetente === 'vendedor'"
-                    [class.justify-start]="msg.remetente === 'comprador'"
-                    class="flex">
-                    
-                    <div 
-                      [class.bg-blue-600]="msg.remetente === 'vendedor'"
-                      [class.text-white]="msg.remetente === 'vendedor'"
-                      [class.bg-gray-700]="msg.remetente === 'comprador'"
-                      [class.text-gray-200]="msg.remetente === 'comprador'"
-                      class="max-w-[70%] rounded-lg p-3">
-                      <p class="text-sm">{{ msg.texto }}</p>
-                      <p 
-                        [class.text-blue-200]="msg.remetente === 'vendedor'"
-                        [class.text-gray-400]="msg.remetente === 'comprador'"
-                        class="text-xs mt-1">
-                        {{ formatHora(msg.data) }}
-                      </p>
-                    </div>
-                  </div>
-                </div>
+            <div class="flex-1 p-4 overflow-y-auto max-h-[450px]">
+            <div class="space-y-4">
+
+              <div
+                *ngFor="let msg of historico2()"
+                class="flex"
+                [ngClass]="{
+              'justify-end': msg.senderId === idUsuario(),
+              'justify-start': msg.senderId !== idUsuario()
+              }"
+                >
+              <div
+                class="max-w-[70%] rounded-lg p-3"
+                [ngClass]="{
+                  'bg-blue-600 text-white': msg.senderId === idUsuario(),
+                  'bg-gray-700 text-gray-200': msg.senderId !== idUsuario()
+                }">
+
+                <p class="text-sm break-words">
+                  {{ msg.content }}
+                </p>
+
+                <p class="text-xs mt-1 text-right opacity-70">
+                  {{ msg.timestamp | date:'HH:mm' }}
+                </p>
+
               </div>
+               
+              </div>
+
+            </div>
+          </div>
+
 
               <!-- Separador -->
               <div class="border-t border-gray-700"></div>
@@ -268,11 +274,10 @@
                 
                 <!-- Avatar -->
                 <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
-                  {{ getInitials(propostaAtual.comprador.nome) }}
+                  <img [src]="fotoVendedor()" alt="">
                 </div>
                 <div>
-                  <p class="font-semibold text-white">{{ propostaAtual.comprador.nome }}</p>
-                  <p class="text-sm text-gray-400">{{ propostaAtual.carroNome }}</p>
+                  <p class="font-semibold text-white">{{ propostaAtual.nomeComprador }}</p>
                 </div>
               </div>
             </div>
@@ -302,26 +307,31 @@
           <div class="flex-1 p-4 overflow-y-auto bg-gray-900">
             <div class="space-y-4">
               <div 
-                *ngFor="let msg of mensagensAtuais"
-                [class.justify-end]="msg.remetente === 'vendedor'"
-                [class.justify-start]="msg.remetente === 'comprador'"
-                class="flex">
-                
-                <div 
-                  [class.bg-blue-600]="msg.remetente === 'vendedor'"
-                  [class.text-white]="msg.remetente === 'vendedor'"
-                  [class.bg-gray-700]="msg.remetente === 'comprador'"
-                  [class.text-gray-200]="msg.remetente === 'comprador'"
-                  class="max-w-[70%] rounded-lg p-3">
-                  <p class="text-sm">{{ msg.texto }}</p>
-                  <p 
-                    [class.text-blue-200]="msg.remetente === 'vendedor'"
-                    [class.text-gray-400]="msg.remetente === 'comprador'"
-                    class="text-xs mt-1">
-                    {{ formatHora(msg.data) }}
-                  </p>
+              *ngFor="let msg of historico"
+              class="flex"
+              [ngClass]="{
+                      'justify-end': msg.senderId === idUsuario(),
+                      'justify-start': msg.senderId !== idUsuario()
+                    }">
+
+                  <div 
+                    class="max-w-[70%] rounded-lg p-3"
+                    [ngClass]="{
+                      'bg-blue-600 text-white': msg.senderId === idUsuario(),
+                      'bg-gray-700 text-gray-200': msg.senderId !== idUsuario()
+                    }">
+
+                    <p class="text-sm break-words">
+                      {{ msg.content }}
+                    </p>
+
+                    <p class="text-xs mt-1 opacity-70 text-right">
+                      {{ msg.timestamp | date:'HH:mm' }}
+                    </p>
+
+                  </div>
                 </div>
-              </div>
+
             </div>
           </div>
 
