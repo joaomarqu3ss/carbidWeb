@@ -433,7 +433,19 @@ export class Offers {
     if (index !== -1) {
       lista[index] = { ...lista[index], status: 'aceita' as const, naoLida: false };
     }
-    this.showToast('Proposta aceita!', 'O comprador será notificado.', 'success');
+
+    this.http.patch(`${environment.apiCarbid}/offer/aceitar/${id}`, null, {headers: this.getHeaderToken()})
+    .subscribe({
+      next: () => {
+        this.showToast('Proposta aceita!', 'O comprador será notificado.', 'success');
+        setTimeout(() => {
+          this.ngOnInit()
+        },2000);
+      },
+      error: (e) => {
+        console.log(e.error)
+      }
+    })
   }
 
   handleRecusarProposta(id: string): void {
@@ -442,7 +454,16 @@ export class Offers {
     if (index !== -1) {
       lista[index] = { ...lista[index], status: 'recusada' as const, naoLida: false };
     }
-    this.showToast('Proposta recusada', 'O comprador será notificado.', 'error');
+
+    this.http.patch(`${environment.apiCarbid}/offer/recusar/${id}`,null, {headers : this.getHeaderToken()})
+    .subscribe({
+      next: () => {
+        this.showToast('Proposta recusada', 'O comprador será notificado.', 'error');
+      },
+      error: (e) => {
+        console.log(e.error.message)
+      }
+    })
   }
 
   formatValor(valor: number): string {
