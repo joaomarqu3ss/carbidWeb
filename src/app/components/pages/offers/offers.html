@@ -129,8 +129,7 @@
                   
                   <div class="flex items-center gap-2 mt-2">
                     <span 
-                      [ngClass]="getStatusBadgeClass(proposta.aceita, proposta.recusada)"
-                      class="px-2 py-1 text-xs font-semibold rounded-full badge-warning">
+                      [ngClass]="getStatusBadgeClass(proposta.aceita, proposta.recusada)">
                       {{ getStatusLabel(statusOffer) }}
                     </span>
                     <span class="text-xs text-gray-400">
